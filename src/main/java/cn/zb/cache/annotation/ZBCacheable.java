@@ -7,7 +7,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import cn.zb.log.constants.OperTypeValue;
+import cn.zb.operlogger.constants.OperTypeValue;
 
 @Target({ TYPE, ElementType.METHOD })
 @Retention(RUNTIME)

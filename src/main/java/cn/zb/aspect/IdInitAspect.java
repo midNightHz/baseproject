@@ -15,8 +15,8 @@ import org.springframework.stereotype.Component;
 
 import cn.zb.base.entity.BaseEntity;
 import cn.zb.base.entity.EntityUtil;
-import cn.zb.log.annotation.OperType;
-import cn.zb.log.constants.OperTypeValue;
+import cn.zb.operlogger.annotation.OperType;
+import cn.zb.operlogger.constants.OperTypeValue;
 
 /**
  * 

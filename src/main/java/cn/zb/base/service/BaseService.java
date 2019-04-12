@@ -17,8 +17,8 @@ import cn.zb.base.entity.BaseEntity;
 import cn.zb.base.model.BaseModel;
 import cn.zb.base.repository.BaseJpaRepository;
 import cn.zb.cache.annotation.ZBCacheable;
-import cn.zb.log.annotation.OperType;
-import cn.zb.log.constants.*;
+import cn.zb.operlogger.annotation.OperType;
+import cn.zb.operlogger.constants.*;
 
 /**
  * 基础业务层，实现基本的功能,如果业务层接口集成该接口，则需要继承该接口的抽象实现类或者重写方法

@@ -21,7 +21,7 @@ import cn.zb.cache.annotation.ZBCacheConfig;
 import cn.zb.cache.annotation.ZBCacheable;
 import cn.zb.cache.interfaces.ZBCache;
 import cn.zb.cache.interfaces.ZBCacheFactory;
-import cn.zb.log.constants.OperTypeValue;
+import cn.zb.operlogger.constants.OperTypeValue;
 
 @Aspect
 @Order(300)

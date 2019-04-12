@@ -14,9 +14,9 @@ import org.springframework.transaction.annotation.Transactional;
 import com.alibaba.fastjson.JSONObject;
 
 import cn.zb.base.controller.CallContext;
-import cn.zb.log.Interface.IBaseLogerService;
-import cn.zb.log.entity.BaseOperLogger;
-import cn.zb.log.service.ISystemOperLogItemService;
+import cn.zb.operlogger.Interface.IBaseLogerService;
+import cn.zb.operlogger.entity.BaseOperLogger;
+import cn.zb.operlogger.service.ISystemOperLogItemService;
 
 @Aspect
 @Order(30)

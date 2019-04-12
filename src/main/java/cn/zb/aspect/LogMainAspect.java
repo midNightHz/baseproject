@@ -21,15 +21,15 @@ import cn.zb.base.controller.CallContext;
 import cn.zb.base.entity.BaseEntity;
 import cn.zb.base.model.ObjectDifference;
 import cn.zb.exception.OperNeedAuditException;
-import cn.zb.log.Interface.IBaseLogerService;
-import cn.zb.log.Interface.ILoggerServiceFactory;
-import cn.zb.log.annotation.AuditSubmitable;
-import cn.zb.log.annotation.OperLogable;
-import cn.zb.log.annotation.OperType;
-import cn.zb.log.constants.LogAuditConstants;
-import cn.zb.log.constants.OperTypeValue;
-import cn.zb.log.entity.BaseOperLogger;
-import cn.zb.log.service.ISystemOperLogItemService;
+import cn.zb.operlogger.Interface.IBaseLogerService;
+import cn.zb.operlogger.Interface.ILoggerServiceFactory;
+import cn.zb.operlogger.annotation.AuditSubmitable;
+import cn.zb.operlogger.annotation.OperLogable;
+import cn.zb.operlogger.annotation.OperType;
+import cn.zb.operlogger.constants.LogAuditConstants;
+import cn.zb.operlogger.constants.OperTypeValue;
+import cn.zb.operlogger.entity.BaseOperLogger;
+import cn.zb.operlogger.service.ISystemOperLogItemService;
 
 /**
  * 

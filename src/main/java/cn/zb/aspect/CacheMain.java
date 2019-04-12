@@ -1,4 +1,4 @@
-package cn.zb.cache;
+package cn.zb.aspect;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

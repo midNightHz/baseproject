@@ -1,4 +1,4 @@
-package cn.zb.log.aspect;
+package cn.zb.aspect;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;

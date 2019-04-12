@@ -1,4 +1,4 @@
-package cn.zb.log.aspect;
+package cn.zb.aspect;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;

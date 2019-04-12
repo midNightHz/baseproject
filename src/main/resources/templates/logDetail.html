@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"></meta>
+<title>日志详情</title>
+</head>
+<body>
+	<div class="main" style="width: 90%; margin: 0 auto">
+		<p style="height: 40px"></p>
+		<div class="title" style="text-align: right">
+			<button onclick="javascript:history.back(-1);"
+				style="width: 80px; height: 40px">返回</button>
+		</div>
+		<p style="height: 20px"></p>
+		<p>
+			<span>同步时间:</span>  
+			<span th:text="${#dates.format(logdetail.synTime, 'yyyy-MM-dd HH:mm:ss')}"></span>
+		</p>
+	</div>
+</body>
+</html>

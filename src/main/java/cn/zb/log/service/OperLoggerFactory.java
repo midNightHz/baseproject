@@ -1,4 +1,4 @@
-package cn.zb.mall.logger.service;
+package cn.zb.log.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

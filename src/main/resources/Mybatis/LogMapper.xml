@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.zb.syn.log.repository.LogSynMybatisRepository">
+
+
+	<select id="findAll" resultType="cn.zb.syn.log.model.LogSynModel" parameterType="cn.zb.syn.log.query.LogSynQuery">
+	
+	
+		select 
+			id,
+			result_message resultMessage,
+			result_type resultType,
+			<!-- syn_params synParams, -->
+			syn_time synTime,
+			syn_url synUrl ,
+			case result_type when 1 then '成功' else '失败' end as resultStr
+		from log_syn order by syn_time desc
+	
+	
+	</select>
+
+
+</mapper>

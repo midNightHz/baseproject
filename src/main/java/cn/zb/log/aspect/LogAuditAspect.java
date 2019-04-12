@@ -1,4 +1,4 @@
-package cn.zb.mall.logger.aspect;
+package cn.zb.log.aspect;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -16,7 +16,7 @@ import com.alibaba.fastjson.JSONObject;
 import cn.zb.base.controller.CallContext;
 import cn.zb.log.Interface.IBaseLogerService;
 import cn.zb.log.entity.BaseOperLogger;
-import cn.zb.mall.logger.service.ISystemOperLogItemService;
+import cn.zb.log.service.ISystemOperLogItemService;
 
 @Aspect
 @Order(30)

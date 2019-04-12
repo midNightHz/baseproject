@@ -1,4 +1,4 @@
-package cn.zb.serialized.kryo.factory;
+package cn.zb.serialize.kryo.factory;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.pool.KryoFactory;

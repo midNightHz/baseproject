@@ -1,8 +1,8 @@
-package cn.zb.serialized.impl;
+package cn.zb.serialize.impl;
 
 import cn.zb.serialize.Serialization;
 import cn.zb.serialize.SerializationBuilder;
-import cn.zb.serialized.kryo.KryoSerialization;
+import cn.zb.serialize.kryo.KryoSerialization;
 import cn.zb.utils.BeanFactory;
 
 public class KryoSerializationBuilerImpl implements SerializationBuilder {

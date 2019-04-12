@@ -1,4 +1,4 @@
-package cn.zb.mall.logger.service;
+package cn.zb.log.service;
 
 import java.util.List;
 
@@ -7,8 +7,8 @@ import cn.zb.base.entity.BaseEntity;
 import cn.zb.base.model.ObjectDifference;
 import cn.zb.base.service.BaseService;
 import cn.zb.log.entity.BaseOperLogger;
-import cn.zb.mall.logger.entity.LogItemsKey;
-import cn.zb.mall.logger.entity.SystemOperLogItem;
+import cn.zb.log.entity.LogItemsKey;
+import cn.zb.log.entity.SystemOperLogItem;
 
 /**
  * 

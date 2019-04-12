@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+<!-- <link rel="stylesheet" th:href="@{css/logsyn.css}" type="text/css"></link>  -->
+<link href="../static/css/logsyn.css" th:href="@{css/logsyn.css}"
+	rel="stylesheet" />
+<meta charset="UTF-8">
+<title>同步日志</title>
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script type="text/javascript">
+	function firstPage() {
+		var currpage = document.getElementById("currPage").innerHTML;
+		var firstPage;
+
+		if (currpage > 1) {
+			firstPage = currpage - 1;
+		} else {
+			firstPage = 1;
+		}
+		window.location.href = "./loglist?pageindex=" + firstPage;
+	}
+
+	function nextPage() {
+
+		var currpage = document.getElementById("currPage").innerHTML;
+
+		var nextPage;
+
+		nextPage = parseInt(currpage) + 1;
+		var maxPage = document.getElementById("totalPage").innerHTML
+
+		if (nextPage > parseInt(maxPage)) {
+			nextPage = maxPage;
+		}
+
+		window.location.href = "./loglist?pageindex=" + nextPage;
+
+	}
+
+	function indexPage() {
+		window.location.href = "./loglist?pageindex=" + 1;
+	}
+
+	function lastPage() {
+		var last = document.getElementById("totalPage").innerHTML;
+
+		window.location.href = "./loglist?pageindex=" + last;
+	}
+
+	function toInputPage() {
+		var page = document.getElementById("inputPage").value;
+		var numberReg = new RegExp("-?\\d+");
+		if (!numberReg.test(page)) {
+			alert("非法的输入");
+			return;
+		}
+		var maxPage = document.getElementById("totalPage").innerHTML
+
+		if (parseInt(page) > parseInt(maxPage)) {
+			page = maxPage;
+		}
+		if (parseInt(page) < 1) {
+			page = 1;
+		}
+		//alert(page);
+		window.location.href = "./loglist?pageindex=" + page;
+	}
+
+	function logdetail(t) {
+		/* 	var a = $("#totalPage")
+			alert(a.text()); */
+	}
+</script>
+</head>
+<body style="background-color: #efefef">
+	<h1 style="text-align: center">同步日志查询</h1>
+	<div class="pages" style="margin: 0 auto">
+		<p style="text-align: center">
+			<!-- 返回到第一页 -->
+			<button id="indexPage" value="1" onclick="indexPage()">首页</button>
+			<!-- 跳转到上一页 -->
+			<button id="firstPage" onclick="firstPage()">上一页</button>
+			<!-- 当前页面 -->
+			<span> 第</span> <span th:text="${loglist.pageNo}" id="currPage"></span>
+			<span>页</span>
+			<!-- 跳转到下一页 -->
+			<button id="nextPage" onclick="nextPage()">下一页</button>
+			<!-- 跳转到最后一页 -->
+			<button id="lastPage" onclick="lastPage()">尾页</button>
+			<!-- 跳转到某一页 -->
+			<span> <input type="text" id="inputPage" value="" width="10px"
+				style="width: 20px" />
+				<button onclick="toInputPage()">跳转</button>
+			</span> <span> 共<span th:text="${loglist.totalPages}" id="totalPage"></span>页
+			</span>
+		</p>
+	</div>
+	<p style="height: 10px"></p>
+	<table class="syntable" border="1"
+		style="border-color: #ccc; border-collapse: collapse; width: 90%; margin: 0 auto; background-color: #eee; outline-color: #eee">
+		<thead style="background-color: #aaa;">
+			<tr>
+				<!-- <th>
+					<p>序号</p>
+				</th> -->
+				<th width="15%">
+					<p>同步日期</p>
+				</th>
+				<th width="7%">
+					<p>同步结果</p>
+				</th>
+				<th width="10%">
+					<p>同步任务</p>
+				</th>
+				<th width="58%">
+					<p>同步地址</p>
+				</th>
+				<th hidden="hidden">同步参数</th>
+			</tr>
+		</thead>
+		<!-- 日志 -->
+		<tr th:each="log:${loglist.datas}" style="color: black; height: 40px;"
+			onclick="logdetail(this)">
+			<!-- 日志记录时间 -->
+			<th th:text="${#dates.format(log.synTime, 'yyyy-MM-dd HH:mm:ss')}"></th>
+			<!-- 请求结果 -->
+			<th><span th:text="${log.resultStr}"></span></th>
+			<th th:text="${log.task}"></th>
+			<th><span th:text="${log.synUrl}"></span></th>
+			<th hidden="hidden"><span th:text="${log.synParams}"></span></th>
+			<th hidden="hidden"><span th:text="${log.id}" class="itemid"></span></th>
+		</tr>
+
+
+	</table>
+
+</body>
+</html>

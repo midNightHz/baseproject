@@ -1,4 +1,4 @@
-package cn.zb.serialized.impl;
+package cn.zb.serialize.impl;
 
 import org.springframework.stereotype.Component;
 

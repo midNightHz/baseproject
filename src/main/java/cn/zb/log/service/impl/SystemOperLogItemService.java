@@ -1,4 +1,4 @@
-package cn.zb.mall.logger.service.impl;
+package cn.zb.log.service.impl;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -29,10 +29,10 @@ import cn.zb.log.annotation.AuditSubmitable;
 import cn.zb.log.constants.LogAuditConstants;
 import cn.zb.log.constants.OperTypeValue;
 import cn.zb.log.entity.BaseOperLogger;
-import cn.zb.mall.logger.entity.LogItemsKey;
-import cn.zb.mall.logger.entity.SystemOperLogItem;
-import cn.zb.mall.logger.repository.SystemOperLogItemJpaRepository;
-import cn.zb.mall.logger.service.ISystemOperLogItemService;
+import cn.zb.log.entity.LogItemsKey;
+import cn.zb.log.entity.SystemOperLogItem;
+import cn.zb.log.repository.SystemOperLogItemJpaRepository;
+import cn.zb.log.service.ISystemOperLogItemService;
 import cn.zb.utils.BeanFactory;
 
 /**

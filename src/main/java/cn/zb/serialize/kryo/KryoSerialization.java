@@ -1,4 +1,4 @@
-package cn.zb.serialized.kryo;
+package cn.zb.serialize.kryo;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -15,8 +15,8 @@ import com.esotericsoftware.kryo.io.Output;
 import com.esotericsoftware.kryo.pool.KryoPool;
 
 import cn.zb.serialize.Serialization;
-import cn.zb.serialized.kryo.factory.KryoFacotryImpl;
-import cn.zb.serialized.kryo.factory.KryoPoolImpl;
+import cn.zb.serialize.kryo.factory.KryoFacotryImpl;
+import cn.zb.serialize.kryo.factory.KryoPoolImpl;
 
 /**
  * 

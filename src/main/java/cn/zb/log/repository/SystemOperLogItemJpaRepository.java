@@ -1,12 +1,12 @@
-package cn.zb.mall.logger.repository;
+package cn.zb.log.repository;
 
 import java.util.List;
 
 import org.springframework.data.jpa.repository.Query;
 
 import cn.zb.base.repository.BaseJpaRepository;
-import cn.zb.mall.logger.entity.LogItemsKey;
-import cn.zb.mall.logger.entity.SystemOperLogItem;
+import cn.zb.log.entity.LogItemsKey;
+import cn.zb.log.entity.SystemOperLogItem;
 
 /**
  * 

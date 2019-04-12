@@ -1,4 +1,4 @@
-package cn.zb.mall.logger.aspect;
+package cn.zb.log.aspect;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;
@@ -29,7 +29,7 @@ import cn.zb.log.annotation.OperType;
 import cn.zb.log.constants.LogAuditConstants;
 import cn.zb.log.constants.OperTypeValue;
 import cn.zb.log.entity.BaseOperLogger;
-import cn.zb.mall.logger.service.ISystemOperLogItemService;
+import cn.zb.log.service.ISystemOperLogItemService;
 
 /**
  * 

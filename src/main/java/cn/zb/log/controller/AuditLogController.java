@@ -1,4 +1,4 @@
-package cn.zb.mall.logger.controller;
+package cn.zb.log.controller;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import cn.zb.base.controller.CallContext;
 import cn.zb.base.controller.RestController;
-import cn.zb.mall.logger.service.ISystemOperLogItemService;
+import cn.zb.log.service.ISystemOperLogItemService;
 
 /**
  * 

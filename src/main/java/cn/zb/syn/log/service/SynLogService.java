@@ -8,11 +8,18 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONObject;
 
+import cn.zb.base.repository.BaseJpaRepository;
+import cn.zb.base.repository.PageableRepository;
 import cn.zb.syn.log.entity.LogSyn;
+import cn.zb.syn.log.model.LogSynModel;
+import cn.zb.syn.log.query.LogSynQuery;
 import cn.zb.syn.log.repository.LogRepository;
+import cn.zb.syn.log.repository.LogSynMybatisRepository;
 import cn.zb.utils.BeanFactory;
 import cn.zb.utils.FileUtils;
 import cn.zb.utils.ThreadFactory;
@@ -23,7 +30,9 @@ import cn.zb.utils.ThreadFactory;
  * @author chen
  *
  */
-public class SynLogService {
+
+@Service
+public class SynLogService implements ISynLogService {
 
 	private static Logger logger = LoggerFactory.getLogger(SynLogService.class);
 
@@ -73,7 +82,7 @@ public class SynLogService {
 			String synPrams = log.getSynParams();
 
 			String fileName = "../../synParams/" + UUID.randomUUID().toString().toUpperCase() + ".txt";
-			File file=new File(fileName);
+			File file = new File(fileName);
 			FileUtils.createNewFile(fileName);
 			FileUtils.writeStringToFile(synPrams, fileName, false, Charset.forName("utf-8"));
 			log.setSynParams(file.getAbsolutePath());
@@ -84,7 +93,25 @@ public class SynLogService {
 			logger.error("保存日志失败：{},error{}", JSONObject.toJSON(log), e.getMessage());
 
 		}
-		// }
+
+	}
+
+	@Override
+	public BaseJpaRepository<LogSyn, Integer> getJpaRepository() {
+		return getLogRepository();
+	}
+
+	@Override
+	public Logger getLogger() {
+		return logger;
+	}
+
+	@Autowired
+	private LogSynMybatisRepository logSynMybatisRepository;
+
+	@Override
+	public PageableRepository<LogSynModel, Integer, LogSynQuery> getPageableRepository() {
+		return logSynMybatisRepository;
 	}
 
 }

@@ -1,4 +1,4 @@
-package cn.zb.mall.logger.entity;
+package cn.zb.log.entity;
 
 import java.io.Serializable;
 

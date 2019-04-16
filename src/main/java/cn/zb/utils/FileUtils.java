@@ -13,6 +13,7 @@ import java.io.Writer;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -405,6 +406,45 @@ public class FileUtils {
 				}
 			}
 		}
+	}
+	
+	/**
+	 * 删除指定日期之前的文件
+	 * 
+	 * @param file
+	 *            制定文件夹
+	 * @param date
+	 *            清除日期
+	 * @throws Exception
+	 */
+	public static void deleteFileBeforTime(File file, Date date) throws Exception {
+		if (file == null) {
+			return;
+		}
+
+		if (date == null) {
+			date = new Date();
+		}
+		File[] files = file.listFiles();
+		long deleteTime = date.getTime();
+		for (int i = 0; i < files.length; i++) {
+			File f = files[i];
+			if (f == null) {
+				continue;
+			}
+			if (f.listFiles() != null) {
+				continue;
+			}
+			long time = f.lastModified();
+			if (time < deleteTime) {
+				if (f.exists()) {
+					//logger.info("删除文件:{}", f.getName());
+					f.delete();
+				}
+			}
+
+		}
+
 	}
 
 }

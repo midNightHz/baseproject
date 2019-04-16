@@ -44,7 +44,7 @@ public class IdInitAspect {
 	 * @Title: excudeService @Description: 切面的定义，切面的定义直接用操作的注解 @author:陈军 @date
 	 *         2019年2月14日 下午3:08:33 void @throws
 	 */
-	@Pointcut("@annotation(cn.zb.log.annotation.OperType)")
+	@Pointcut("@annotation(cn.zb.operlogger.annotation.OperType)")
 	public void excudeService() {
 
 	}

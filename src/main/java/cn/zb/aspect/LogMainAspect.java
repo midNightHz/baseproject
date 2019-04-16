@@ -55,7 +55,7 @@ public class LogMainAspect {
     private ILoggerServiceFactory loggerServiceFactory;
 
     // 定义切面
-    @Pointcut("@annotation(cn.zb.log.annotation.OperType)")
+    @Pointcut("@annotation(cn.zb.operlogger.annotation.OperType)")
     // @Pointcut("execution(* cn.zb..*Service.**(..))")
     public void excudeService() {
 

@@ -27,7 +27,7 @@ public class LogAuditAspect {
     @Autowired
     private ISystemOperLogItemService systemOperLogItemService;
 
-    @Pointcut("execution(* cn.zb.log.Interface.IBaseLogerService.auditOperLog(..))")
+    @Pointcut("execution(* cn.zb.operlogger.Interface.IBaseLogerService.auditOperLog(..))")
     public void excudeService() {
 
     }

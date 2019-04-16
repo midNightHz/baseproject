@@ -104,7 +104,7 @@ public class User implements SynEntity<Integer> {
 	// 是否接受短信认证登录
 	protected Integer loginsm;
 
-	@Column(nullable = false, columnDefinition = "bit default 0")
+	@Column(nullable = false)
 	protected Short isSyn;
 
 	@Column(length = 100)

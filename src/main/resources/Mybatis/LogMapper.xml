@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="cn.zb.syn.log.repository.LogSynMybatisRepository">
+<mapper namespace="cn.zb.syn.synlog.repository.LogSynMybatisRepository">
 
 
-	<select id="findAll" resultType="cn.zb.syn.log.model.LogSynModel" parameterType="cn.zb.syn.log.query.LogSynQuery">
+	<select id="findAll" resultType="cn.zb.syn.synlog.model.LogSynModel" parameterType="cn.zb.syn.synlog.query.LogSynQuery">
 	
 	
 		select 

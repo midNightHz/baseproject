@@ -29,8 +29,20 @@
 			<artifactId>pagehelper-spring-boot-starter</artifactId>
 			<version>1.1.0</version>
 		</dependency>
-		
-		
+
+		<dependency>
+
+			<groupId>org.activiti</groupId>
+
+			<artifactId>activiti-spring-boot-starter-basic</artifactId>
+
+			<version>5.21.0</version>
+
+		</dependency>
+
+
+
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-thymeleaf</artifactId>
@@ -271,9 +283,12 @@
 		<resources>
 			<resource>
 				<directory>src/main/resources</directory>
-				<includes>
+				<!-- <includes>
 					<include>
 						Mybatis/*.xml
+					</include>
+					<include>
+						processes/*.*
 					</include>
 
 					<include>
@@ -288,7 +303,7 @@
 					<include>
 						*.sql
 					</include>
-				</includes>
+				</includes> -->
 			</resource>
 		</resources>
 		<pluginManagement>

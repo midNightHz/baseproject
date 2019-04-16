@@ -81,7 +81,7 @@ public interface BaseMybatisRepository<T extends BaseModel<ID>, ID extends Seria
      * Long      
      * @throws
      */
-    Long count(BaseQuery query);
+    Long count(Q query);
 
     /**
      * 
@@ -94,7 +94,7 @@ public interface BaseMybatisRepository<T extends BaseModel<ID>, ID extends Seria
      * List<T>      
      * @throws
      */
-    List<T> findAll(BaseQuery query);
+    List<T> findAll(Q query);
 
     /**
      * 

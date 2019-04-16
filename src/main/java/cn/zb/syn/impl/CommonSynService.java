@@ -3,6 +3,7 @@ package cn.zb.syn.impl;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,20 +43,21 @@ public class CommonSynService implements ICommonSynService {
 		return token;
 	}
 
+	// 获取token
 	private String getToken() {
 
 		String appId = appConfig.getAppKey();
 
 		String appSercret = appConfig.getAppSercret();
 
+		if (StringUtils.isBlank(appId) || StringUtils.isBlank(appSercret) ) {
+			
+			return null;
+		}
 		String url = appConfig.getCloudUrl() + SynConstants.GET_TOKEN_URL;
 
 		url = url.replace("APPID", appId).replace("APPSECRET", appSercret);
 
-		if (appId == null || appSercret == null) {
-
-			return null;
-		}
 		String result = null;
 		try {
 

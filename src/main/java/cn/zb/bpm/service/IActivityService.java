@@ -7,6 +7,12 @@ import org.activiti.engine.task.Task;
 
 import cn.zb.base.controller.CallContext;
 
+/**
+ * 任务审核的接口
+ * 
+ * @author chen
+ *
+ */
 public interface IActivityService {
 
 	String acticityId();

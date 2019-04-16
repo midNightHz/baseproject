@@ -30,18 +30,16 @@
 			<version>1.1.0</version>
 		</dependency>
 
+
+		<!-- 工作流工具 -->
 		<dependency>
-
 			<groupId>org.activiti</groupId>
-
 			<artifactId>activiti-spring-boot-starter-basic</artifactId>
-
 			<version>5.21.0</version>
-
 		</dependency>
 
 
-
+		<!-- thymeleaf html模板 -->
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -52,13 +50,13 @@
 			<groupId>net.sourceforge.nekohtml</groupId>
 			<artifactId>nekohtml</artifactId>
 		</dependency>
-
+		<!-- 序列化工具 -->
 		<dependency>
 			<groupId>com.esotericsoftware</groupId>
 			<artifactId>kryo</artifactId>
 			<version>4.0.2</version>
 		</dependency>
-
+		<!-- 二维码生成工具 -->
 		<dependency>
 			<groupId>com.google.zxing</groupId>
 			<artifactId>core</artifactId>
@@ -126,7 +124,7 @@
 			<artifactId>poi-ooxml</artifactId>
 			<version>4.0.1</version>
 		</dependency>
-
+		<!-- 热启动工具 -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
@@ -145,10 +143,13 @@
 			<artifactId>commons-lang</artifactId>
 			<version>2.6</version>
 		</dependency>
+
+		<!-- 切面 -->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-aspects</artifactId>
 		</dependency>
+		<!-- class文件 扫描 -->
 		<dependency>
 			<groupId>org.reflections</groupId>
 			<artifactId>reflections</artifactId>
@@ -270,6 +271,13 @@
 			<artifactId>hutool-all</artifactId>
 			<version>4.2.1</version>
 		</dependency>
+
+		<!-- NETTY包 -->
+		<!-- <dependency>
+			<groupId>io.netty</groupId>
+			<artifactId>netty-all</artifactId>
+			<version>4.1.6.Final</version>
+		</dependency> -->
 	</dependencies>
 
 	<build>
@@ -283,27 +291,9 @@
 		<resources>
 			<resource>
 				<directory>src/main/resources</directory>
-				<!-- <includes>
-					<include>
-						Mybatis/*.xml
-					</include>
-					<include>
-						processes/*.*
-					</include>
-
-					<include>
-						*.xml
-					</include>
-					<include>
-						*.properties
-					</include>
-					<include>
-						*.lisence
-					</include>
-					<include>
-						*.sql
-					</include>
-				</includes> -->
+				<!-- <includes> <include> Mybatis/*.xml </include> <include> processes/*.* 
+					</include> <include> *.xml </include> <include> *.properties </include> <include> 
+					*.lisence </include> <include> *.sql </include> </includes> -->
 			</resource>
 		</resources>
 		<pluginManagement>

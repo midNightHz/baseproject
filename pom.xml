@@ -39,23 +39,18 @@
 		</dependency>
 
 
-		<!-- thymeleaf html模板 -->
-
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-thymeleaf</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>net.sourceforge.nekohtml</groupId>
-			<artifactId>nekohtml</artifactId>
-		</dependency>
+		<!-- thymeleaf html模板 <dependency> <groupId>org.springframework.boot</groupId> 
+			<artifactId>spring-boot-starter-thymeleaf</artifactId> </dependency> <dependency> 
+			<groupId>net.sourceforge.nekohtml</groupId> <artifactId>nekohtml</artifactId> 
+			</dependency> -->
 		<!-- 序列化工具 -->
 		<dependency>
 			<groupId>com.esotericsoftware</groupId>
 			<artifactId>kryo</artifactId>
 			<version>4.0.2</version>
 		</dependency>
+
+		
 		<!-- 二维码生成工具 -->
 		<dependency>
 			<groupId>com.google.zxing</groupId>
@@ -273,11 +268,17 @@
 		</dependency>
 
 		<!-- NETTY包 -->
-		<!-- <dependency>
-			<groupId>io.netty</groupId>
-			<artifactId>netty-all</artifactId>
-			<version>4.1.6.Final</version>
-		</dependency> -->
+		<!-- <dependency> <groupId>io.netty</groupId> <artifactId>netty-all</artifactId> 
+			<version>4.1.6.Final</version> </dependency> -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-configuration-processor</artifactId>
+			<optional>true</optional>
+		</dependency>
 	</dependencies>
 
 	<build>

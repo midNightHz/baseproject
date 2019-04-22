@@ -157,7 +157,7 @@ public interface IDownSynEntityService<T extends DownEntity<ID>, ID extends Seri
 
 			String tableName = EntityUtil.getTableName(entityClass()).toUpperCase();
 
-			return config.getBoolean(tableName + SynTaskConstants.DOWN_TASK_ID_SUFFIX, true);
+			return config.booleanConfig(tableName + SynTaskConstants.DOWN_TASK_ID_SUFFIX, true);
 		} catch (Exception e) {
 			getLogger().warn("获取是否需要同步配置错误：{}", e.getMessage());
 			return true;

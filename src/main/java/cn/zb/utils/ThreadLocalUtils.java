@@ -70,30 +70,6 @@ public class ThreadLocalUtils {
 		return null;
 	}
 
-	public static void main(String[] args) {
-
-		for (int i = 0; i < 10; i++) {
-			Runnable r = new Runnable() {
-
-				@Override
-				public void run() {
-
-					Long id = Thread.currentThread().getId();
-
-					Integer randInt = (int) (Math.random() * 1000);
-					System.out.println(id + "------" + randInt);
-					put("threadint", randInt);
-
-					Integer result = (getParam("threadint", Integer.class));
-
-					System.out.println("out" + "-----" + id + "----" + result);
-				}
-			};
-
-			ThreadFactory.excute(r);
-
-		}
-
-	}
+	
 
 }

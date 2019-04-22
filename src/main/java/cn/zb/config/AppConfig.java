@@ -1,94 +1,89 @@
 package cn.zb.config;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
  * 
  * @ClassName: AppConfig
- * @Description:应用配置类
+ * @Description:应用配置类--
  * @author: 陈军
  * @date: 2018年12月27日 下午4:45:20
- * 
+ * @see cn.zb.config.ApplicationProperties
  * @Copyright: 2018 www.zb-tech.com Inc. All rights reserved.
  *
  */
-@Service("appConfig")
-@PropertySource("classpath:appConfig.properties")
+@Service
+@Deprecated
 public class AppConfig {
-	/**
-	 * 是否允许跨域全局变量
-	 */
-	@Value("${crossable}")
-	private Boolean crossable;
+
+	@Autowired
+	ApplicationProperties applicationProperties;
 
 	public Boolean isCross() {
-		return crossable;
+		return applicationProperties.getCrossable();
 	}
 
-	/**
-	 * 系统是否需要登录，针对不同的环境来配置
-	 */
-	@Value("${sys.needlogin}")
-	private Boolean needLogin;
-
 	public Boolean getNeedLogin() {
+
+		Boolean needLogin = applicationProperties.getNeedLogin();
 		return needLogin == null || needLogin;
 	}
 
-	/**
-	 * 图片保存的根目录，要与配置的图片映射的本地路径一致
-	 */
-	@Value("${img.rootpath}")
-	private String imgRootPath;
-
 	public String getImgRootPath() {
-		return imgRootPath;
+		return applicationProperties.getImgRootPath();
 	}
-
-	/**
-	 * 公司新闻保存子目录
-	 */
-	@Value("${img.corp.path}")
-	private String corpImgPath;
 
 	public String getCorpImgPath() {
-		return corpImgPath;
+		return applicationProperties.getCorpImgPath();
 	}
-
-	@Value("${img.good.path}")
-	private String goodsImgPath;
 
 	public String getGoodsImgPath() {
-		return goodsImgPath;
+		return applicationProperties.getGoodsImgPath();
 	}
 
-	@Value("${cache.mode}")
-	private String cacheMode;
+	public String getAdImgPath() {
+		return applicationProperties.getAdImgPath();
+	}
 
 	public String getCacheMode() {
-		return cacheMode;
+		return applicationProperties.getCacheMode();
 	}
-	@Value("${application.syn.appkey}")
-	private String appKey;
+
+	public String getLocalUrL() {
+		return applicationProperties.getLocalUrl();
+	}
+
+	public String getLoginUrl() {
+		return applicationProperties.getLoginUrl();
+	}
+
+	public boolean getgoodsSubLimit() {
+		return applicationProperties.getGoodsSubLimit() != null && applicationProperties.getGoodsSubLimit();
+	}
+
+	public int getGoodsSubmitCount() {
+		return applicationProperties.getGoodsSubmitCount();
+	}
+
+	public boolean getSynAddBaseGoods() {
+		return applicationProperties.getSynAddBaseGoods();
+	}
+
+	public String getGoodsRepetitionFields() {
+		return applicationProperties.getGoodsRepetitionFields();
+	}
+
+	public String getCloudUrl() {
+		return applicationProperties.getCloudUrl();
+	}
 
 	public String getAppKey() {
-		return appKey;
+		return applicationProperties.getAppKey();
 	}
-	@Value("${application.syn.appsercret}")
-	private String appSercret;
 
 	public String getAppSercret() {
-		return appSercret;
+		return applicationProperties.getAppSercret();
 	}
-	@Value("${cloud.url}")
-	private String cloudUrl;
-	
-	public String getCloudUrl() {
-		return cloudUrl;
-	}
-	
-	
 
 }

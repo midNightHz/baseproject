@@ -18,7 +18,7 @@ public class ThreadFactory {
 		if (EXCUTOR == null) {
 			synchronized (lock) {
 				if (EXCUTOR == null)
-					EXCUTOR = new ThreadPoolExecutor(50, 500, 0L, TimeUnit.MILLISECONDS,
+					EXCUTOR = new ThreadPoolExecutor(200, 500, 0L, TimeUnit.MILLISECONDS,
 							new LinkedBlockingQueue<>(500));
 			}
 		}

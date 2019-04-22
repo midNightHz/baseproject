@@ -35,7 +35,8 @@ import cn.zb.utils.Time;
  * @param <T>
  * @param <ID>
  */
-public interface ISynService<T extends SynEntity<ID>, ID extends Serializable> extends BaseService<T, ID> ,IBaseSynService{
+public interface ISynService<T extends SynEntity<ID>, ID extends Serializable>
+		extends BaseService<T, ID>, IBaseSynService {
 
 	BaseSynJpaRepository<T, ID> getBaseSynJpaRepository();
 
@@ -166,7 +167,7 @@ public interface ISynService<T extends SynEntity<ID>, ID extends Serializable> e
 			if (state == 100) {
 				if (retry) {
 
-					//getToken(true);
+					// getToken(true);
 
 					return sendToCloudPost(list, url, false);
 				}
@@ -238,15 +239,16 @@ public interface ISynService<T extends SynEntity<ID>, ID extends Serializable> e
 	default SynTaskGroup group() {
 		return SynTaskGroup.PRIMARY;
 	}
+
 	/**
-	 * 同步策略 ：DELETE 同步完成以后把同步完成的数据删除
-	 * MODIFY_SYN_STATUS 同步完成后将同步状态修改成1
+	 * 同步策略 ：DELETE 同步完成以后把同步完成的数据删除 MODIFY_SYN_STATUS 同步完成后将同步状态修改成1
+	 * 
 	 * @return
 	 */
 	default SynStrategy strategy() {
 		return SynStrategy.DELETE;
 	}
-	
+
 	default boolean needRun() {
 
 		ISystemConfig config = null;
@@ -258,7 +260,7 @@ public interface ISynService<T extends SynEntity<ID>, ID extends Serializable> e
 
 			String tableName = EntityUtil.getTableName(entityClass()).toUpperCase();
 
-			return config.getBoolean(tableName + SynTaskConstants.SYN_TASK_ID_SUFFIX, true);
+			return config.booleanConfig(tableName + SynTaskConstants.SYN_TASK_ID_SUFFIX, true);
 		} catch (Exception e) {
 			getLogger().warn("获取是否需要同步配置错误：{}", e.getMessage());
 			return true;

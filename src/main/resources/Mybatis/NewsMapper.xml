@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="cn.zb.mall.news.repository.NewsMybatisRepository">
+
+
+	<select id="findAll" resultType="cn.zb.mall.news.model.NewsModel" parameterType="cn.zb.mall.news.query.NewsQuery">
+	
+			select 
+			
+				n.*,
+				info.name as newsTypeName,
+				qf.name as qualityType,
+				p.p_name as createrName 
+			
+			from umgnews n 
+			left join (select * from infodata where infoid=9050) info on n.newstype=info.dataid
+			left join (select * from infodata where infoid=9052) qf on n.newstype=qf.dataid
+			left join person p on n.Creater=p.p_lsm
+			
+			<where>
+				<if test="title!=null">
+					and 	n.newsType like '%'+#{title}+'%'
+				</if>
+				
+				<if test="newsType!=null">
+				
+					and n.NewsType like like '%'+#{newsType}+'%'
+				</if>
+			
+			</where>
+	
+	</select>
+
+
+</mapper>

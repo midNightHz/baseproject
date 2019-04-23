@@ -29,6 +29,7 @@ public class UserService implements IUserService {
 	@Autowired
 	private UserMybatisRepository userMybatisRepository;
 
+	@SuppressWarnings("deprecation")
 	@Autowired
 	private AppConfig appConfig;
 
@@ -54,6 +55,7 @@ public class UserService implements IUserService {
 		return userRepository;
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public String getSynUrl() {
 		return appConfig.getCloudUrl() + SynConstants.PERSON_SYN_URL;

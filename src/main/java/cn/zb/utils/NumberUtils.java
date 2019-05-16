@@ -1,6 +1,8 @@
 package cn.zb.utils;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.regex.Pattern;
 
 /**
@@ -48,6 +50,11 @@ public class NumberUtils {
     public static final Float FLOAT_MINUS_ONE = new Float(-1.0f);
 
     public static final Pattern PATTERN = Pattern.compile("0|([-]?[1-9][0-9]*)");
+
+    /**
+    * 默认计算比例精度
+    */
+    public static final int DEFAULT_PRECISION = 2;
 
     /**
      * @param n
@@ -175,6 +182,83 @@ public class NumberUtils {
 
     public static boolean isLong(String str) {
         return PATTERN.matcher(str).matches();
+    }
+
+    /**
+     * 
+     * @Title: computeGrowthRadio   
+     * @Description: 计算增长率，返回格式 100.00%   计算逻辑 (a-b)/b
+     * @author:陈军
+     * @date 2019年5月16日 上午10:15:10 
+     * @param a
+     * @param b
+     * @param precision
+     * @return      
+     * String      
+     * @throws
+     */
+    public static Double computeGrowthRadio(Number a, Number b) {
+        if (b == null || b.doubleValue() == 0.0) {
+            return null;
+        }
+        if (a == null) {
+            a = 0.0;
+        }
+        return computeRatio0(a.doubleValue() - b.doubleValue(), b.doubleValue());
+    }
+
+    /**
+     * 
+     * @Title: computeRatio   
+     * @Description:计算两个数值的比例 计算逻辑 a/b  
+     * @author:陈军
+     * @date 2019年5月16日 上午10:17:02 
+     * @param a
+     * @param b
+     * @param precision
+     * @return      
+     * String      
+     * @throws
+     */
+    private static Double computeRatio0(Number a, Number b) {
+
+        double result = a.doubleValue() / b.doubleValue();
+
+        return result;
+    }
+
+    public static Double computeRatio(Number a, Number b) {
+        if (b == null || b.doubleValue() == 0.0) {
+            return null;
+        }
+        if (a == null) {
+            a = 0.0;
+        }
+        return computeRatio0(a, b);
+
+    }
+
+    /**
+     * 
+     * @Title: formartPercent   
+     * @Description: 数字格式化成百分比  
+     * @author:陈军
+     * @date 2019年5月16日 上午10:41:13 
+     * @param number
+     * @param precision
+     * @return      
+     * String      
+     * @throws
+     */
+    public static String formartPercent(Number number, int precision) {
+        StringBuilder sb = new StringBuilder("0.");
+        for (int i = 0; i < precision; i++) {
+            sb.append("0");
+
+        }
+        sb.append("%");
+
+        return new DecimalFormat(sb.toString()).format(number);
     }
 
 }

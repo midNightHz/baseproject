@@ -5,12 +5,14 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
 
 // 没有此注解无法扫描过滤器
 @ServletComponentScan
+@ComponentScan(basePackages= {"cn.zb"})
 // 允许定时任务注解
 @EnableScheduling
 public class Application extends SpringBootServletInitializer {

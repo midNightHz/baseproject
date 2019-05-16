@@ -1,5 +1,6 @@
 package cn.zb.utils;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -14,6 +15,23 @@ import java.util.List;
  *
  */
 public class CodeUtils {
+
+    /**
+     * 10个数字
+     */
+    public static final char[] NUMBERS = new char[] { '1', '2', '3', '4', '5', '6', '7', '8', '9', '0' };
+
+    /**
+     * 26个小写字母
+     */
+    public static final char[] LETTER_LOW = new char[] { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l',
+            'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z' };
+    /**
+     * 26个大写字母
+     */
+    public static final char[] LETTER_UPPER = new char[] { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L',
+            'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' };
+
     /**
      * 
      * @Title: randomCode   
@@ -33,6 +51,11 @@ public class CodeUtils {
             return randomCodeRepetition(length, chars);
         }
         return randomCodeUnrepetition(length, chars);
+    }
+
+    public static String randomNumber(int length, boolean repetition) throws Exception {
+        char[] chars = new char[] { '1', '2', '3', '4', '5', '6', '7', '8', '9', '0' };
+        return randomCode(length, chars, repetition);
     }
 
     /**

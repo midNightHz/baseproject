@@ -6,6 +6,7 @@ import java.awt.RenderingHints;
 import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -100,45 +101,56 @@ public class QRCoderCreator {
      */
     private String logoUrl;
 
-    public void setCircleLogo(boolean circleLogo) {
+    public QRCoderCreator setCircleLogo(boolean circleLogo) {
         this.circleLogo = circleLogo;
+        return this;
     }
 
-    public void setLevel(ErrorCorrectionLevel level) {
+    public QRCoderCreator setLevel(ErrorCorrectionLevel level) {
         this.level = level;
+        return this;
     }
 
-    public void setHeight(int height) {
+    public QRCoderCreator setHeight(int height) {
         this.height = height;
+        return this;
     }
 
-    public void setImageType(String imageType) {
+    public QRCoderCreator setImageType(String imageType) {
         this.imageType = imageType;
+        return this;
     }
 
-    public void setImagePath(String imagePath) {
+    public QRCoderCreator setImagePath(String imagePath) {
         this.imagePath = imagePath;
+        return this;
     }
 
-    public void setWidth(int width) {
+    public QRCoderCreator setWidth(int width) {
         this.width = width;
+        return this;
     }
 
-    public void setMessage(String message) {
+    public QRCoderCreator setMessage(String message) {
         this.message = message;
+        return this;
     }
 
-    public void setLogoRatio(double logoRatio) {
+    public QRCoderCreator setLogoRatio(double logoRatio) {
         this.logoRatio = logoRatio;
+        return this;
     }
 
-    public void setLogoUrl(String logoUrl) {
+    public QRCoderCreator setLogoUrl(String logoUrl) {
         this.logoUrl = logoUrl;
+        return this;
     }
 
-    public void setHasLog(boolean hasLog) {
+    public QRCoderCreator setHasLog(boolean hasLog) {
         this.hasLog = hasLog;
+        return this;
     }
+    
 
     public QRCoderCreator(String message) {
         this.message = message;
@@ -512,13 +524,19 @@ public class QRCoderCreator {
             }
         }
     }
-    
+
     public static void main(String[] args) throws Exception {
-        QRCoderCreator c=new QRCoderCreator("https://blog.csdn.net/qq_36330296/article/details/81034683");
-        c.setLogoUrl("https://img-blog.csdn.net/20170417190514200?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvbm9hbWFuX3dncw==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast");
-        c.setHasLog(true);
-        c.setCircleLogo(true);
-        c.creatQRCode();
+        String str = CodeUtils.randomCode(100, CodeUtils.LETTER_UPPER, true);
+        QRCoderCreator c = new QRCoderCreator(str);
+        File file1 = new File("d:/1/1.jpg");
+        FileUtils.createNewFile(file1);
+        OutputStream os = new FileOutputStream(file1);
+        // c.setLogoUrl("https://img-blog.csdn.net/20170417190514200?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvbm9hbWFuX3dncw==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast");
+        // c.setHasLog(true);
+        // c.setCircleLogo(true);
+        // c.creatQRCode();
+        c.setLevel(ErrorCorrectionLevel.H);
+        c.creatDynamicSizeQRCode(os);
     }
 
 }

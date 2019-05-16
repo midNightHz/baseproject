@@ -71,13 +71,15 @@ public class SynLogService implements ISynLogService {
 	}
 
 	private static void flushLog() {
+
 		LogSyn log = LOG_QUEUE.poll();
-		if (log == null) {
-			return;
-		}
 		// int retryTime = 3;S
 		// for (int i = 0; i < retryTime; i++) {
 		try {
+			if (log == null) {
+				Thread.sleep(100);
+				return;
+			}
 
 			String synPrams = log.getSynParams();
 

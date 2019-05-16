@@ -1,11 +1,14 @@
 package cn.zb.utils;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.alibaba.fastjson.JSONObject;
 
 public class ClassUtils {
 
@@ -33,7 +36,6 @@ public class ClassUtils {
             return null;
         }
         try {
-
             return c.getDeclaredField(fileName);
 
         } catch (Exception e) {
@@ -150,21 +152,22 @@ public class ClassUtils {
 
     }
 
-    public static Object cloneObject(Object obj)throws Exception {
+    public static Object cloneObject(Object obj) throws Exception {
 
         Class<?> cl = obj.getClass();
 
         List<Field> fields = getFields(cl);
 
         Object result = cl.newInstance();
-        
-        for(Field f:fields) {
+
+        for (Field f : fields) {
             f.setAccessible(true);
             f.set(result, f.get(obj));
         }
-        
-        return result;
 
+        return result;
     }
+
+   
 
 }

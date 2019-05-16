@@ -7,7 +7,6 @@ import java.util.Date;
 
 import org.apache.commons.lang.StringUtils;
 
-
 public class DateUtil {
 
     public static final SimpleDateFormat YEAR_MONTH_DAY = new SimpleDateFormat("yyyy-MM-dd");
@@ -240,7 +239,6 @@ public class DateUtil {
         if (timeZone == null || timeZone.trim().length() == 0) {
             return processTime(time);
         }
-        // TODO
         Date currDate = processTime(time);
         Calendar calendar = Calendar.getInstance();
         int currTimeOffset = calendar.getTimeZone().getRawOffset();
@@ -332,17 +330,18 @@ public class DateUtil {
     }
 
     /**
-     * 
-     * @Title: diffTime   
-     * @Description: 日期相减，日期1减日期2
-     * @author:陈军
-     * @date 2019年1月29日 下午12:53:26 
-     * @param date1
-     * @param date2
-     * @return      
-     * int      
-     * @throws
-     */
+    * 
+    * @Title: diffTime   
+    * @Description: 日期相减 date1-date2  
+    * @author:陈军
+    * @date 2019年5月16日 上午10:53:51 
+    * @param date1
+    * @param date2
+    * @param formart  年月日时分秒等 @see cn.zb.utils.DateField
+    * @return      
+    * int      
+    * @throws
+    */
     public static int diffTime(Date date1, Date date2, DateField formart) {
         if (date1 == null || date2 == null) {
             return 0;
@@ -406,10 +405,56 @@ public class DateUtil {
         Date d = parseDate("2018-11-2 12:00:01", "yyyy-MM-dd HH:mm:ss");
         Date d2 = parseDate("2018-10-1 12:00:01", "yyyy-MM-dd HH:mm:ss");
         Time t = new Time();
-        int a = diffTime(d, d2, DateField.SECOND);
+        int a = diffTime(d, d2, DateField.DAY);
         t.stop();
         System.out.println(a);
         System.out.println(t.getTime());
     }
+
+    // 获取当前日期前一天的月份的第一天
+
+    public static Date lastDayMonthFirst() {
+        return null;
+
+    }
+
+    // 获取当前日期前一天的最后日期
+
+    // 获取当前月份的前一个月份 格式 YYYY-MM
+
+    public static String lastDayMonthStr() throws Exception {
+
+        return formartDate(lastDay(), "yyyy-MM");
+
+    }
+
+    public static Date lastDay() {
+        Calendar c = Calendar.getInstance();
+        c.add(Calendar.DATE, -1);
+        return c.getTime();
+
+    }
+
+    /**
+     * 
+     * @Title: getTimeField   
+     * @Description: 获取  某个时间属性的值 如年 月 日等
+     * @author:陈军
+     * @date 2019年5月16日 下午1:23:00 
+     * @param date
+     * @param field
+     * @return      
+     * int      
+     * @throws
+     */
+    public static int getTimeField(Date date, int field) {
+        Calendar c = Calendar.getInstance();
+        c.setTime(date);
+        return c.get(field);
+    }
+
+    // 格式化当前日期前一天的月份 格式 YYYY-MM
+
+    // 获取当前月份的前一年的月份 格式YYYY-MM
 
 }

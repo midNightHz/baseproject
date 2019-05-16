@@ -13,9 +13,9 @@ import java.io.Writer;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.output.FileWriterWithEncoding;
@@ -360,6 +360,67 @@ public class FileUtils {
         fileOutputStream.close();
         return fullName;
     }
+
+    public static String getFileSuffix(String fileName) throws Exception {
+        if (StringUtils.isBlank(fileName)) {
+            throw new Exception("文件名不能为空");
+        }
+        int index = fileName.lastIndexOf(".");
+        if (index == -1 || index == fileName.length()) {
+            throw new Exception("文件名格式不正确");
+        }
+        String suffix = fileName.substring(index);
+        return suffix.toLowerCase();
+    }
+
+    public static String getFileSuffic(File file) throws Exception {
+        if (file == null) {
+            throw new Exception("文件不能为空");
+        }
+        return getFileSuffix(file.getName());
+    }
+
+    /**
+     * 
+     * @Title: rename   
+     * @Description: 文件重命名
+     * @author:陈军
+     * @date 2019年5月6日 下午3:22:21 
+     * @param str
+     * @return
+     * @throws Exception      
+     * String      
+     * @throws
+     */
+    public static String rename(String str) throws Exception {
+
+        Assert.isEmpty(str, "文件名不能为空");
+        str = str.replaceAll("\\\\", "/");
+        int seqLast = str.lastIndexOf("/");
+        int sufficSeq = str.lastIndexOf(".");
+        if (sufficSeq < 0) {
+            throw new Exception("文件名格式不正确：" + str);
+        }
+        String uuid=UUID.randomUUID().toString();
+        if (seqLast < 0) {
+            return uuid + str.substring(sufficSeq);
+        }
+        if (seqLast > sufficSeq) {
+            throw new Exception("文件名格式不正确：" + str);
+
+        }
+        return str.substring(0, seqLast+1) + uuid + str.substring(sufficSeq);
+
+    }
+
+    public static String rename(File file) throws Exception {
+        Assert.isNull(file, "文件不能为空");
+        return rename(file.getName());
+    }
+
+    public static void main(String[] args) throws Exception {
+        System.out.println(rename("d:/1/1/1.jpg"));
+    }
     
     /**
 	 * 将字符串写入到文件中
@@ -407,44 +468,4 @@ public class FileUtils {
 			}
 		}
 	}
-	
-	/**
-	 * 删除指定日期之前的文件
-	 * 
-	 * @param file
-	 *            制定文件夹
-	 * @param date
-	 *            清除日期
-	 * @throws Exception
-	 */
-	public static void deleteFileBeforTime(File file, Date date) throws Exception {
-		if (file == null) {
-			return;
-		}
-
-		if (date == null) {
-			date = new Date();
-		}
-		File[] files = file.listFiles();
-		long deleteTime = date.getTime();
-		for (int i = 0; i < files.length; i++) {
-			File f = files[i];
-			if (f == null) {
-				continue;
-			}
-			if (f.listFiles() != null) {
-				continue;
-			}
-			long time = f.lastModified();
-			if (time < deleteTime) {
-				if (f.exists()) {
-					//logger.info("删除文件:{}", f.getName());
-					f.delete();
-				}
-			}
-
-		}
-
-	}
-
 }

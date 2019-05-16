@@ -10,23 +10,11 @@ public class ThreadFactory {
 	/**
 	 * 线程池
 	 */
-	private static ExecutorService EXCUTOR;;
-
-	private static final Object lock = new Object();
-
-	public static ExecutorService getExcutor() {
-		if (EXCUTOR == null) {
-			synchronized (lock) {
-				if (EXCUTOR == null)
-					EXCUTOR = new ThreadPoolExecutor(200, 500, 0L, TimeUnit.MILLISECONDS,
-							new LinkedBlockingQueue<>(500));
-			}
-		}
-		return EXCUTOR;
-	}
+	public static final ExecutorService EXCUTOR = new ThreadPoolExecutor(50, 500, 0L, TimeUnit.MILLISECONDS,
+			new LinkedBlockingQueue<>(500));
 
 	public static void excute(Runnable r) {
-		getExcutor().execute(r);
+		EXCUTOR.execute(r);
 	}
 
 }

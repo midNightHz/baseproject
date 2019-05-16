@@ -5,6 +5,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +13,7 @@ import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 
 import cn.zb.base.controller.CallContext;
@@ -24,6 +26,7 @@ import cn.zb.operlogger.constants.*;
 import cn.zb.page.PageData;
 import cn.zb.page.PageDataImpl;
 import cn.zb.page.Pageable;
+import cn.zb.utils.Assert;
 
 /**
  * 基础业务层，实现基本的功能,如果业务层接口集成该接口，则需要继承该接口的抽象实现类或者重写方法
@@ -380,7 +383,7 @@ public interface BaseService<T extends BaseEntity<ID>, ID extends Serializable> 
 	 * @return
 	 * @throws Exception
 	 */
-	default PageData<T> simpleList(T temp, Pageable pageable,CallContext callContext) throws Exception {
+	default PageData<T> simpleList(T temp, Pageable pageable, CallContext callContext) throws Exception {
 		Example<T> example = Example.of(temp);
 		org.springframework.data.domain.Pageable page = new org.springframework.data.domain.PageRequest(
 				pageable.getPageNo(), pageable.getPageSize());
@@ -390,5 +393,61 @@ public interface BaseService<T extends BaseEntity<ID>, ID extends Serializable> 
 		long count = pages.getTotalElements();
 		pageable.setTotalCount(count);
 		return new PageDataImpl<>(list, pageable);
+	}
+
+	default T findByExample(T entity, String... fields) throws Exception {
+		List<T> list = findRepetitionEntity(entity, fields);
+
+		if (list == null || list.size() == 0) {
+			return null;
+
+		}
+		if (list.size() == 1) {
+			return list.get(0);
+		}
+		throw new Exception("查询多条记录");
+
+	}
+
+	default List<T> findByExample(Map<String, Object> params) {
+
+		Assert.isNull(params, "查询参数不能为空");
+
+		T t = JSON.parseObject(JSONObject.toJSONString(params), entityClass());
+
+		Example<T> example = Example.of(t);
+		return getJpaRepository().findAll(example);
+
+	}
+
+	/**
+	 * 
+	 * @Title: checkRepetition @Description: 新增是排重， @author:陈军 @date 2019年5月15日
+	 * 上午8:52:19 @param t//需要新增的实体类 @param callContex @return @throws Exception
+	 * boolean ture 有重复 false 无重复 @throws
+	 */
+	default boolean checkRepetition(T t, CallContext callContext) throws Exception {
+		return false;
+
+	}
+
+	@SuppressWarnings("unchecked")
+	default boolean exist(T entity, String... fields) throws Exception {
+		Assert.isNull(entity, "模板不能为空");
+		T exampleEntity = null;
+		if (fields == null || fields.length == 0) {
+			exampleEntity = entity;
+		} else {
+
+			exampleEntity = (T) entity.cloneEntity(fields);
+		}
+
+		if (getLogger().isDebugEnabled()) {
+			getLogger().debug("example:{},fields:{},searchEntity:{}", JSONObject.toJSON(exampleEntity),
+					JSONObject.toJSON(fields), JSONObject.toJSON(entity));
+		}
+		Example<T> example = Example.of(exampleEntity);
+
+		return getJpaRepository().exists(example);
 	}
 }

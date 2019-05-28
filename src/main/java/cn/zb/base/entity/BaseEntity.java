@@ -18,7 +18,9 @@ import cn.zb.base.annotation.DefaultValue;
 import cn.zb.base.annotation.FieldName;
 import cn.zb.base.annotation.FieldUncheckDiff;
 import cn.zb.base.annotation.NotNull;
+import cn.zb.base.annotation.RegCheck;
 import cn.zb.base.model.ObjectDifference;
+import cn.zb.utils.Assert;
 import cn.zb.utils.ClassUtils;
 
 /**
@@ -375,6 +377,56 @@ public interface BaseEntity<E extends Serializable> extends Serializable, Clonea
 			}
 
 			setField(f, defaultValue);
+
+		}
+
+	}
+	
+	/**
+	 * 
+	 * @Title: checkStringReg
+	 * @Description: 校验字段类型是否符合规范 可以校验string or number类型
+	 * @Description:校验时会先检索实体类上是否有注解再去校验字段上是否有注解;常用的正则@see cn.zb.utils
+	 * @return void
+	 * @author 陈军
+	 * @date 2019年5月27日 下午5:33:50
+	 */
+	default void checkStringReg() throws Exception {
+
+		RegCheck regCheck = this.getClass().getAnnotation(RegCheck.class);
+		if (regCheck == null) {
+			return;
+		}
+
+		List<Field> fields = ClassUtils.getFields(this.getClass());
+
+		for (Field f : fields) {
+
+			Object value = getField(f);
+			if (value == null) {
+				return;
+			}
+
+			// 字段类型的判断
+			Class<?> fType = f.getType();
+
+			if (Number.class.isAssignableFrom(fType) || String.class.isAssignableFrom(fType)) {
+
+				// 是否需要校验格式
+				RegCheck fr = f.getAnnotation(RegCheck.class);
+
+				String reg = fr == null ? null : fr.reg();
+				if (StringUtils.isBlank(reg)) {
+
+					continue;
+
+				}
+
+				String str = value.toString();
+
+				Assert.isMatch(reg, str, getFieldName(f) + "格式不正确");
+
+			}
 
 		}
 

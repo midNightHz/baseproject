@@ -287,7 +287,7 @@ public interface IBaseController0<S extends BaseService<E, ID>, E extends BaseEn
      * @throws
      */
     default void checkFields(E e) throws Exception {
-
+    	e.checkStringReg();
     }
 
 }

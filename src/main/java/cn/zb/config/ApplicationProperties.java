@@ -72,6 +72,9 @@ public class ApplicationProperties {
 	private String appKey;
 
 	private String appSercret;
+	
+	
+	 private String ipDbFile="/ipipfree.ipdb";
 
 	public Boolean getCrossable() {
 		return crossable;
@@ -207,5 +210,13 @@ public class ApplicationProperties {
 
 	public void setAppSercret(String appSercret) {
 		this.appSercret = appSercret;
+	}
+
+	public String getIpDbFile() {
+		return ipDbFile;
+	}
+
+	public void setIpDbFile(String ipDbFile) {
+		this.ipDbFile = ipDbFile;
 	}
 }

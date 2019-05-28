@@ -45,7 +45,7 @@ public class ApplicationProperties {
 	/**
 	 * 自定义缓存的模式
 	 */
-	private String cacheMode="delayed";
+	private String cacheMode = "delayed";
 	/**
 	 * 登录页面地址
 	 */
@@ -57,7 +57,7 @@ public class ApplicationProperties {
 	/**
 	 * 订单提交时商品数量的限制值
 	 */
-	private int goodsSubmitCount=100;
+	private int goodsSubmitCount = 100;
 	/**
 	 * 同步时是否对新增基础商品信息
 	 */
@@ -72,9 +72,27 @@ public class ApplicationProperties {
 	private String appKey;
 
 	private String appSercret;
-	
-	
-	 private String ipDbFile="/ipipfree.ipdb";
+
+	/**
+	 * 图像压缩质量
+	 */
+
+	private double imageCompressionQuality = 1.0;
+
+	/**
+	 * 默认压缩后图片尺寸
+	 */
+	private Integer imageDefaultSize = 1980;
+	/**
+	 * 上传图片是否进行压缩
+	 */
+	private boolean imageCompression = true;
+
+	private String fileUploadService = "cn.zb.commoms.file.service.impl.DefaultFileService";
+
+	private String ipDbFile = "/ipipfree.ipdb";
+
+	private boolean imageRename = true;
 
 	public Boolean getCrossable() {
 		return crossable;
@@ -219,4 +237,45 @@ public class ApplicationProperties {
 	public void setIpDbFile(String ipDbFile) {
 		this.ipDbFile = ipDbFile;
 	}
+
+	public double getImageCompressionQuality() {
+		return imageCompressionQuality;
+	}
+
+	public void setImageCompressionQuality(double imageCompressionQuality) {
+		this.imageCompressionQuality = imageCompressionQuality;
+	}
+
+	public Integer getImageDefaultSize() {
+		return imageDefaultSize;
+	}
+
+	public void setImageDefaultSize(Integer imageDefaultSize) {
+		this.imageDefaultSize = imageDefaultSize;
+	}
+
+	public boolean isImageCompression() {
+		return imageCompression;
+	}
+
+	public void setImageCompression(boolean imageCompression) {
+		this.imageCompression = imageCompression;
+	}
+
+	public String getFileUploadService() {
+		return fileUploadService;
+	}
+
+	public void setFileUploadService(String fileUploadService) {
+		this.fileUploadService = fileUploadService;
+	}
+
+	public boolean isImageRename() {
+		return imageRename;
+	}
+
+	public void setImageRename(boolean imageRename) {
+		this.imageRename = imageRename;
+	}
+
 }

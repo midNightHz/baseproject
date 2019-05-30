@@ -32,6 +32,8 @@ import cn.zb.utils.BeanFactory;
  * @author chen
  *
  */
+
+@Deprecated
 public abstract class ServiceController extends EventPublisherController {
 
     private static Logger logger = LoggerFactory.getLogger(ServiceController.class);

@@ -9,6 +9,8 @@ import cn.zb.utils.NumberUtils;
  * @param <S>
  *            控制器对应的主业务接口类
  */
+
+@Deprecated
 public abstract class RestController extends ServiceController {
 
     /**

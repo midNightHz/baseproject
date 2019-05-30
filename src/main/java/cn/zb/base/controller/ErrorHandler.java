@@ -15,6 +15,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @Component
+
+@Deprecated
 public class ErrorHandler implements HandlerExceptionResolver, Ordered {
 
     private static final Logger logger = LoggerFactory.getLogger(ErrorHandler.class);

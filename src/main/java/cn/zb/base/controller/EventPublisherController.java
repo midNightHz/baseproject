@@ -8,6 +8,7 @@ import org.springframework.web.context.request.NativeWebRequest;
 
 
 
+@Deprecated
 public abstract class EventPublisherController {
 
 	@Autowired

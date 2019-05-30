@@ -93,22 +93,19 @@ public interface IFileController extends CommonController {
      * @throws
      */
     @PostMapping("imgupload")
-    default void uploadImg(HttpServletRequest request, HttpServletResponse response, MultipartFile file) {
+    default Object uploadImg(HttpServletRequest request, HttpServletResponse response, MultipartFile file) throws Exception{
 
-        ServiceController serviceController = getServiceController();
-        try {
+       
             if (file == null) {
 
-                serviceController.writeFailDataJsonToClient(response, "上传失败，当前文件为空");
-                return;
+                return toFailResult("获取文件失败");
             }
 
             
 
-            CallContext callContext = serviceController.getCallContext(request);
+            CallContext callContext = getCallContext(request);
             if (!uploadAuth(callContext)) {
-                serviceController.writeFailDataJsonToClient(response, "你没有上传图片的权限");
-                return;
+                return toFailResult("你没有上传的权限");
             }
 
             String imagePath = getUploadPath();
@@ -125,12 +122,9 @@ public interface IFileController extends CommonController {
             FileUploadVo result = fileService.uploadPic(file, imagePath, callContext,request.getContentType());
 
 
-            serviceController.writeSuccessJsonToClient(response, result);
+           return toSucessResult(response);
 
-        } catch (Exception e) {
-            getLogger().error("上传图片失败：{}", e.getMessage());
-            serviceController.writeFailDataJsonToClient(response, "上传失败");
-        }
+        
 
     }
 

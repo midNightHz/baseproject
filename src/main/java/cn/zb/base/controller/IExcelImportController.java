@@ -21,13 +21,12 @@ public interface IExcelImportController<S extends IExcelImportService<T, ID>, T 
     S getExcelImportService();
 
     @PostMapping("importdata")
-    default void importDatas(HttpServletRequest request, HttpServletResponse response,
-            @RequestParam() MultipartFile file) {
-        try {
+    default Object importDatas(HttpServletRequest request, 
+            @RequestParam() MultipartFile file)throws Exception {
 
             InputStream is = file.getInputStream();
 
-            CallContext callContext = getServiceController().getCallContext(request);
+            CallContext callContext = getCallContext(request);
             // 文件保存在本地备份
             String fileName = file.getOriginalFilename();
             fileName = "../importExcels/" + fileName.substring(0, fileName.lastIndexOf("."))
@@ -38,14 +37,8 @@ public interface IExcelImportController<S extends IExcelImportService<T, ID>, T 
             // 导入
             ExcelImportResultModel<T> result = s.importDatas(is, callContext);
 
-            getServiceController().writeSuccessJsonToClient(response, result);
+          return toSucessResult(result);
 
-        } catch (Exception e) {
-
-            getLogger().error("导入文件失败:{}", e.getMessage());
-
-            getServiceController().writeFailDataJsonToClient(response, "导入失败");
-        }
 
     }
 }

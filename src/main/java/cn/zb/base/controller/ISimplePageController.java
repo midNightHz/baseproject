@@ -28,20 +28,16 @@ public interface ISimplePageController<S extends BaseService<E, ID>, E extends B
 	 * @param response
 	 */
 	@GetMapping("simpleList")
-	default void getSimpleList(HttpServletRequest request, HttpServletResponse response) {
-		try {
-			CallContext callContext = getServiceController().getCallContext(request);
-			E temp = getServiceController().fromInputParams(request, getService().entityClass());
+	default void getSimpleList(HttpServletRequest request, HttpServletResponse response)throws Exception {
+		
+			CallContext callContext = getCallContext(request);
+			E temp = fromInputParams(request, getService().entityClass());
 
 			Pageable pageable = getPageable(request);
 			PageData<E> datas = getService().simpleList(temp, pageable, callContext);
 
-			getServiceController().writeSuccessJsonToClient(response, datas);
+			toFailResult(datas);
 
-		} catch (Exception e) {
-			getLogger().error("查询失败：{}", e.getMessage());
-			getServiceController().writeFailDataJsonToClient(response, "查询失败");
-		}
 
 	}
 

@@ -29,22 +29,18 @@ public interface IExportController<Q extends BaseQuery, T extends BaseModel<ID>,
 	 */
 	@SuppressWarnings("unchecked")
 	@GetMapping("export")
-	default void downLoad(HttpServletRequest request, HttpServletResponse response) {
-		try {
+	default void downLoad(HttpServletRequest request, HttpServletResponse response)throws Exception {
+		
 			Class<?> queryClass = getExportService().queryClass();
-			if (queryClass == null) {
-				getServiceController().writeFailDataJsonToClient(response, "获取参数异常");
-			}
+			
 			// 实例化查询对象
-			Q q = (Q) getServiceController().fromInputParams(request, queryClass);
+			Q q = (Q) fromInputParams(request, queryClass);
 			if (q == null) {
 				// 查询对象为空的情况
 				q = (Q) queryClass.newInstance();
 			}
 			downLoad(request, response, q);
-		} catch (Exception e) {
-			getServiceController().writeFailDataJsonToClient(response, "导出异常");
-		}
+		
 	}
 
 	/**
@@ -57,7 +53,7 @@ public interface IExportController<Q extends BaseQuery, T extends BaseModel<ID>,
 		OutputStream os = null;
 		try {
 
-			CallContext callContext = getServiceController().getCallContext(request);
+			CallContext callContext = getCallContext(request);
 			// DEBUG日志
 			if (getLogger().isDebugEnabled()) {
 				getLogger().debug("querys:" + JSONObject.toJSONString(q));

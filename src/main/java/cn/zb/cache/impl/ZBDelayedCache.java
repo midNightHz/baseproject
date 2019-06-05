@@ -92,8 +92,8 @@ public class ZBDelayedCache extends AbstractCacheImpl {
 					caches = CACHE_MAP.get(str);
 
 					keymap = DELAYED_KEY_MAP.get(str);
-					
-					if(queue==null) {
+
+					if (queue == null) {
 						break;
 					}
 
@@ -197,6 +197,7 @@ public class ZBDelayedCache extends AbstractCacheImpl {
 
 					} else {
 						delayedKey = new DelayedKey(key, liveTime);
+						delayedKey.setFlushable(delaytime == null ? true : delaytime.isFlushable());
 						keymap.put(key, delayedKey);
 						queue.offer(delayedKey);
 					}
@@ -266,9 +267,10 @@ public class ZBDelayedCache extends AbstractCacheImpl {
 					}
 					DelayedKey delayedKey = keymap.get(key);
 					if (delayedKey != null) {
-						// 这里要判断是否需要更新delayed的时间
-						delayedKey.setMoveTime(System.currentTimeMillis() + delayedKey.getLiveTime());
-
+						if (delayedKey.isFlushable()) {
+							// 这里要判断是否需要更新delayed的时间
+							delayedKey.setMoveTime(System.currentTimeMillis() + delayedKey.getLiveTime());
+						}
 					}
 				}
 			}
@@ -298,6 +300,8 @@ class DelayedKey implements Delayed {
 	private long liveTime;
 	// @JSONField(format="yyyy-MM-dd HH:mm:ss")
 	private long moveTime;
+
+	private boolean flushable;
 
 	public DelayedKey() {
 
@@ -398,6 +402,14 @@ class DelayedKey implements Delayed {
 		if (moveTime != other.moveTime)
 			return false;
 		return true;
+	}
+
+	public boolean isFlushable() {
+		return flushable;
+	}
+
+	public void setFlushable(boolean flushable) {
+		this.flushable = flushable;
 	}
 
 }

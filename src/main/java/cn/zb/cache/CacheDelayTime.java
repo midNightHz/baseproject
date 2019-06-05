@@ -4,38 +4,50 @@ import java.util.concurrent.TimeUnit;
 
 public class CacheDelayTime {
 
-    private long interval;
+	public static final TimeUnit DEFAULT_UNIT = TimeUnit.MILLISECONDS;
 
-    private TimeUnit unit;
+	private long interval;
 
-    public long getInterval() {
-        return interval;
-    }
+	private TimeUnit unit;
 
-    public TimeUnit getUnit() {
-        return unit;
-    }
+	private boolean flushable = true;
 
-    public void setInterval(long interval) {
-        this.interval = interval;
-    }
+	public long getInterval() {
+		return interval;
+	}
 
-    public void setUnit(TimeUnit unit) {
-        this.unit = unit;
-    }
+	public TimeUnit getUnit() {
+		return unit;
+	}
 
-    public CacheDelayTime(long interval, TimeUnit unit) {
-        super();
-        this.interval = interval;
-        this.unit = unit;
-    }
+	public void setInterval(long interval) {
+		this.interval = interval;
+	}
 
-    public CacheDelayTime(long interval) {
-        this.interval = interval;
-        this.unit = TimeUnit.SECONDS;
-    }
-    
-    public CacheDelayTime() {
-    }
+	public void setUnit(TimeUnit unit) {
+		this.unit = unit;
+	}
+
+	public CacheDelayTime(long interval, TimeUnit unit) {
+		super();
+		this.interval = interval;
+		this.unit = unit;
+	}
+
+	public CacheDelayTime(long interval) {
+		this.interval = interval;
+		this.unit = DEFAULT_UNIT;
+	}
+
+	public CacheDelayTime() {
+	}
+
+	public boolean isFlushable() {
+		return flushable;
+	}
+
+	public void setFlushable(boolean flushable) {
+		this.flushable = flushable;
+	}
 
 }

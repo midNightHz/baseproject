@@ -28,64 +28,76 @@ public interface BaseController<S extends BaseService<E, ID>, E extends BaseEnti
 		extends IBaseController0<S, E, ID> {
 
 	/**
-	 * 获取控制层对应的service
 	 * 
-	 * @return E S getService();
-	 * 
-	 * /**
-	 * 
-	 * @Title: findById @Description: 根据id查询，如果id是基本类型 如string
-	 * int等的情况可以直接使用，如果id是一个对象/联合主键时，可以重写该方法，
-	 * 将请求方式修改为post，id的注解修改为RequestBody，即可 @PostMapping("findbyid") public void
-	 * findById(HttpServletRequest request, HttpServletResponse
-	 * response, @RequestBody() CorpKey id) { BaseController.super.findById(request,
-	 * response, id); } @author:陈军 @date 2019年1月3日 上午10:38:22 @param request @param
-	 * response @param id void @throws
+	 * @Title: findById
+	 * @Description: 查询
+	 * @param request
+	 * @param id
+	 * @return
+	 * @throws Exception
+	 * @return
+	 * @author 陈军
+	 * @date 2019年6月5日 下午2:24:35
 	 */
 	@GetMapping("findbyid")
-	default Object findById(HttpServletRequest request, @RequestParam() ID id)throws Exception {
+	default Object findById(HttpServletRequest request, @RequestParam() ID id) throws Exception {
 		return IBaseController0.super.findById(request, id);
 	}
 
 	/**
-	 * 删除某一条记录,可以通过修改service层里的checkDeleteAuth方法来确认当前用户是否有删除该记录的权限,
-	 * 如果删除的逻辑为软删除,可以重写delete方法进行逻辑删除操作,ID不是基本对象，为自定义对象的情况(联合主键的情况)下可以参考findById
 	 * 
+	 * @Title: deleteById
+	 * @Description: 删除
 	 * @param request
-	 * @param response
 	 * @param id
+	 * @return
+	 * @throws Exception
+	 * @return
+	 * @author 陈军
+	 * @date 2019年6月5日 下午2:24:07
 	 */
 	@GetMapping("delete")
-	default Object deleteById(HttpServletRequest request,  @RequestParam() ID id)throws Exception {
-		return IBaseController0.super.deleteById(request,  id);
+	default Object deleteById(HttpServletRequest request, @RequestParam() ID id) throws Exception {
+		return IBaseController0.super.deleteById(request, id);
 	}
 
 	/**
 	 * 
-	 * @Title: save @Description: 单条记录保存 @author:陈军 @date 2019年1月3日 上午9:27:53 @param
-	 * request @param response @param e void @throws
+	 * @Title: save
+	 * @Description: 保存
+	 * @param request
+	 * @throws Exception
+	 * @return void
+	 * @author 陈军
+	 * @date 2019年6月5日 下午2:23:44
 	 */
 	@SuppressWarnings("unchecked")
 	@CrossOrigin()
 	@PostMapping("save")
-	default void save(HttpServletRequest request) throws Exception{
+	default void save(HttpServletRequest request) throws Exception {
 		Class<?> entityClass = getService().entityClass();
 		E e = (E) fromInputJson(request, entityClass);
-		save(request,  e);
+		save(request, e);
 	}
 
 	/**
 	 * 
-	 * @Title: saveGet @Description: 单条记录保存--get形式 @author:陈军 @date 2019年1月11日
-	 * 上午10:26:53 @param request @param response @param e void @throws
+	 * @Title: saveGet
+	 * @Description: 保存
+	 * @param request
+	 * @param response
+	 * @throws Exception
+	 * @return void
+	 * @author 陈军
+	 * @date 2019年6月5日 下午2:23:27
 	 */
 
 	@SuppressWarnings("unchecked")
 	@GetMapping("save")
-	default void saveGet(HttpServletRequest request, HttpServletResponse response/* , E e */)throws Exception {
+	default void saveGet(HttpServletRequest request, HttpServletResponse response/* , E e */) throws Exception {
 		Class<?> entityClass = getService().entityClass();
 		E e = (E) fromInputParams(request, entityClass);
-		save(request,  e);
+		save(request, e);
 
 	}
 

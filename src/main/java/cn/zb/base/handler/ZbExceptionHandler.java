@@ -1,6 +1,5 @@
 package cn.zb.base.handler;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
 
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;

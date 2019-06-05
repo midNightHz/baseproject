@@ -12,6 +12,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 import cn.zb.base.annotation.SoftDeleteable;
+import cn.zb.base.constants.ThreadLocalParamsName;
 import cn.zb.base.entity.BaseEntity;
 import cn.zb.base.entity.BaseUnionKey;
 import cn.zb.base.entity.EntityUtil;
@@ -21,6 +22,7 @@ import cn.zb.base.result.ResultStatus;
 import cn.zb.base.service.BaseService;
 import cn.zb.exception.OperNeedAuditException;
 import cn.zb.utils.ClassUtils;
+import cn.zb.utils.ThreadLocalUtils;
 
 /**
  * 
@@ -66,15 +68,19 @@ public interface IBaseController0<S extends BaseService<E, ID>, E extends BaseEn
 	}
 
 	/**
-	 * 删除某一条记录,可以通过修改service层里的checkDeleteAuth方法来确认当前用户是否有删除该记录的权限,
-	 * 如果删除的逻辑为软删除,可以重写delete方法进行逻辑删除操作,ID不是基本对象，为自定义对象的情况(联合主键的情况)下可以参考findById
 	 * 
+	 * @Title: deleteById
+	 * @Description: 删除的控制层业务
 	 * @param request
-	 * @param response
 	 * @param id
+	 * @return
+	 * @throws Exception
+	 * @return Object
+	 * @author 陈军
+	 * @date 2019年6月5日 下午2:31:34
 	 */
 	@SuppressWarnings("unchecked")
-	default Object deleteById(HttpServletRequest request,  ID id) throws Exception {
+	default Object deleteById(HttpServletRequest request, ID id) throws Exception {
 		try {
 			CallContext callcontext = getCallContext(request);
 
@@ -130,10 +136,17 @@ public interface IBaseController0<S extends BaseService<E, ID>, E extends BaseEn
 
 	/**
 	 * 
-	 * @Title: save @Description: 单条记录保存 @author:陈军 @date 2019年1月3日 上午9:27:53 @param
-	 *         request @param response @param e void @throws
+	 * @Title: save
+	 * @Description: 保存的主要业务逻辑
+	 * @param request
+	 * @param e
+	 * @return
+	 * @throws Exception
+	 * @return Object
+	 * @author 陈军
+	 * @date 2019年6月5日 下午2:31:03
 	 */
-	default Object save(HttpServletRequest request,  E e)throws Exception {
+	default Object save(HttpServletRequest request, E e) throws Exception {
 		try {
 			CallContext callContext = getCallContext(request);
 
@@ -160,7 +173,7 @@ public interface IBaseController0<S extends BaseService<E, ID>, E extends BaseEn
 			Class<?> idClass = idField.getType();
 			// 主键是联合主键
 			isUnionKey = embeddedId != null || BaseUnionKey.class.isAssignableFrom(idClass);
-
+			E result = null;
 			if (id == null) {
 				if (isUnionKey) {
 					return toFailResult("必须初始化联合主键");
@@ -176,7 +189,7 @@ public interface IBaseController0<S extends BaseService<E, ID>, E extends BaseEn
 					return toFailResult("你没有新增的权限");
 				}
 				// 新增的业务逻辑
-				getService().insert(e, callContext);
+				result = getService().insert(e, callContext);
 			} else {
 				// 字段的合规校验
 
@@ -193,8 +206,7 @@ public interface IBaseController0<S extends BaseService<E, ID>, E extends BaseEn
 							return toFailResult("你没有新增的权限");
 						}
 						// 新增的业务逻辑
-						getService().insert(e, callContext);
-						return toSucessResult("保存成功");
+						result = getService().insert(e, callContext);
 					}
 					// 这里要做下判断 看id的类型是否是 联合主键或者id上有@EmbeddedId注解
 					getLogger().error("不存在id为{}的记录", id);
@@ -222,16 +234,19 @@ public interface IBaseController0<S extends BaseService<E, ID>, E extends BaseEn
 					toFailResult("你没有修改的权限");
 				}
 				// 修改的业务逻辑
-				getService().update(e, old, callContext);
+				result = getService().update(e, old, callContext);
+			}
+			Boolean returnEntity = ThreadLocalUtils.getParam(ThreadLocalParamsName.SAVE_RETURN_ENTITY, Boolean.class);
+
+			if (returnEntity != null && returnEntity) {
+				return toSucessResult(result);
 			}
 
 			return toSucessResult("保存成功");
 
 		} catch (OperNeedAuditException oe) {
-			return toResult("操作审核中", ResultStatus.NEEDAUDIT.getCode(),  "操作成功，进入审核");
+			return toResult("操作审核中", ResultStatus.NEEDAUDIT.getCode(), "操作成功，进入审核");
 		}
-
-		
 
 	}
 

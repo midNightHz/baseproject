@@ -3,7 +3,6 @@ package cn.zb.base.entity;
 import java.io.Serializable;
 import java.util.Date;
 
-import javax.persistence.MappedSuperclass;
 
 /**
  * 带创建时间和修改时间的实体类
@@ -12,57 +11,32 @@ import javax.persistence.MappedSuperclass;
  *
  * @param <ID>
  */
-@MappedSuperclass
-public abstract class CreatAndModifyEntity<ID extends Serializable> implements BaseEntity<ID> {
+/**
+ * 
+ * @title:CreatAndModifyEntity.java
+ * @ClassName: CreatAndModifyEntity
+ * @Description:
+ * @author: 陈军
+ * @date: 2019年6月18日 上午10:31:00
+ * @Copyright: 2019 www.zb-tech.com Inc. All rights reserved.
+ *
+ */
+public interface CreatAndModifyEntity<ID extends Serializable> extends BaseEntity<ID> {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -2771042335256161624L;
+	Date getCreateTime();
 
-	/**
-	 * 创建时间
-	 */
-	protected Date creatDate;
+	Long getCreateUser();
 
-	protected String createUser;
+	void setCreateTime(Date createTime);
 
-	/**
-	 * 修改时间
-	 */
-	protected Date modifyDate;
+	void setCreateUser(Long createUser);
 
-	protected String modifyUser;
+	Date getLastModifyTime();
 
-	public Date getCreatDate() {
-		return creatDate;
-	}
+	Long getLastModifyUser();
 
-	public void setCreatDate(Date creatDate) {
-		this.creatDate = creatDate;
-	}
+	void setLastModifyTime(Date lastModifyTime);
 
-	public Date getModifyDate() {
-		return modifyDate;
-	}
+	void setLastModifyUser(Long lastModifyUser);
 
-	public void setModifyDate(Date modifyDate) {
-		this.modifyDate = modifyDate;
-	}
-
-	public String getCreateUser() {
-		return createUser;
-	}
-
-	public void setCreateUser(String createUser) {
-		this.createUser = createUser;
-	}
-
-	public String getModifyUser() {
-		return modifyUser;
-	}
-
-	public void setModifyUser(String modifyUser) {
-		this.modifyUser = modifyUser;
-	}
 }

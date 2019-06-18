@@ -181,12 +181,15 @@ public interface IBaseController0<S extends BaseService<E, ID>, E extends BaseEn
 				// 新增是非空字段的校验
 				e.notNull();
 				// 字段的合规校验
-
 				// 新增权限的校验
 				if (!getService().checkInsertAuth(e, callContext)) {
 
 					getLogger().error("当前用户{}没有新增的权限", callContext.getUserName());
 					return toFailResult("你没有新增的权限");
+				}
+				if (getService().checkRepetition(e, callContext)) {
+					// getLogger().error("当前用户{}没有新增的权限", callContext.getUserName());
+					return toFailResult("不能重复新增");
 				}
 				// 新增的业务逻辑
 				result = getService().insert(e, callContext);

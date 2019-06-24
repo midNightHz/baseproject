@@ -27,9 +27,10 @@ public interface IBaseLogerService<T extends BaseOperLogger> extends BaseService
 	 * @throws Exception
 	 * 
 	 * @Title: saveOperLogger @Description: 保存日志
-	 * 默认方法，可以将实体类的字段拷贝到日志记录中，日志中的字段需要和实体类中的字段一模一样 @author:陈军 @date 2019年1月7日
-	 * 下午1:34:13 @param entity @param operType @param callContext @param
-	 * logDesc @param auditLog @return BaseOperLogger @throws
+	 *         默认方法，可以将实体类的字段拷贝到日志记录中，日志中的字段需要和实体类中的字段一模一样 @author:陈军 @date
+	 *         2019年1月7日 下午1:34:13 @param entity @param operType @param
+	 *         callContext @param logDesc @param auditLog @return
+	 *         BaseOperLogger @throws
 	 */
 
 	default BaseOperLogger saveOperLogger(BaseEntity<?> entity, OperTypeValue operType, CallContext callContext,
@@ -61,8 +62,8 @@ public interface IBaseLogerService<T extends BaseOperLogger> extends BaseService
 	/**
 	 * 
 	 * @Title: auditLog @Description: 日志审核 修改订单的审核状态 @author:陈军 @date 2019年1月7日
-	 * 下午1:34:29 @param loggerid 日志id @param status 审核后状态 @param callcontext @throws
-	 * Exception void @throws
+	 *         下午1:34:29 @param loggerid 日志id @param status 审核后状态 @param
+	 *         callcontext @throws Exception void @throws
 	 */
 	default void auditLog(Integer loggerid, Integer status, CallContext callcontext) throws Exception {
 		T t = findById(loggerid);
@@ -77,8 +78,8 @@ public interface IBaseLogerService<T extends BaseOperLogger> extends BaseService
 	/**
 	 * 
 	 * @Title: auditOperLog @Description: 日志审核。该方法不提供任何具体的业务，仅仅是为了日志审核切面能正常切入到该方法。
-	 * 如果需要继续执行其他业务，可以重写该方法,但是切记不要写业务逻辑,否则可能会抛出异常 @author:陈军 @date 2019年1月9日
-	 * 下午12:41:01 @param t @param callContext @throws Exception void @throws
+	 *         如果需要继续执行其他业务，可以重写该方法,但是切记不要写业务逻辑,否则可能会抛出异常 @author:陈军 @date 2019年1月9日
+	 *         下午12:41:01 @param t @param callContext @throws Exception void @throws
 	 */
 	default void auditOperLog(T t, Integer status, CallContext callContext) throws Exception {
 		throw new AbstractMethodError();
@@ -87,22 +88,23 @@ public interface IBaseLogerService<T extends BaseOperLogger> extends BaseService
 	/**
 	 * 
 	 * @Title: auditOperLogAuth @Description: 是否有审核当前日志的权限 @author:陈军 @date
-	 * 2019年1月9日 下午12:41:22 @param t @param callContext @return @throws Exception
-	 * boolean @throws
+	 *         2019年1月9日 下午12:41:22 @param t @param callContext @return @throws
+	 *         Exception boolean @throws
 	 */
 	boolean auditOperLogAuth(T t, CallContext callContext) throws Exception;
 
 	/**
 	 * 
 	 * @Title: findbyObjectId @Description: 查询日志是否有未审/已审日志存在 @author:陈军 @date
-	 * 2019年1月7日 下午1:34:53 @param id @param status @return BaseOperLogger @throws
+	 *         2019年1月7日 下午1:34:53 @param id @param status @return
+	 *         BaseOperLogger @throws
 	 */
 	List<? extends BaseOperLogger> findbyObjectId(String id, Integer status);
 
 	/**
 	 * 
 	 * @Title: getOperTargetTableName @Description: 审核目标表的表名 @author:陈军 @date
-	 * 2019年1月9日 下午12:55:47 @return String @throws
+	 *         2019年1月9日 下午12:55:47 @return String @throws
 	 */
 	default String getOperTargetTableName() {
 		return EntityUtil.getTableName(entityClass());
@@ -134,7 +136,7 @@ public interface IBaseLogerService<T extends BaseOperLogger> extends BaseService
 	}
 
 	@Override
-	default boolean checkModifyAuth(T t, CallContext callContext) throws Exception {
+	default boolean checkModifyAuth(T t, T origin, CallContext callContext) throws Exception {
 		throw new Exception("日志不允许修改");
 	}
 
@@ -148,6 +150,5 @@ public interface IBaseLogerService<T extends BaseOperLogger> extends BaseService
 		t.setOpertime(new Date());
 		t.setOper(callContext.getUserId());
 	}
-
 
 }

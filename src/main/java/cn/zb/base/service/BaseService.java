@@ -138,14 +138,21 @@ public interface BaseService<T extends BaseEntity<ID>, ID extends Serializable> 
 	}
 
 	/**
-	 * 校验当前用户是否有修改实例的权限，返回true为有权限修改，返回false则无权限修改，可以通过重写该方法来修改修改权限
 	 * 
+	 * @Title: checkModifyAuth
+	 * @Description: TODO(这里用一句话描述这个方法的作用)
 	 * @param t
+	 *            修改后的数据
+	 * @param origin
+	 *            源数据
 	 * @param callContext
 	 * @return
 	 * @throws Exception
+	 * @return boolean
+	 * @author 陈军
+	 * @date 2019年6月24日 下午3:46:01
 	 */
-	default boolean checkModifyAuth(T t, CallContext callContext) throws Exception {
+	default boolean checkModifyAuth(T t, T origin, CallContext callContext) throws Exception {
 		return true;
 	}
 
@@ -423,8 +430,8 @@ public interface BaseService<T extends BaseEntity<ID>, ID extends Serializable> 
 	/**
 	 * 
 	 * @Title: checkRepetition @Description: 新增是排重， @author:陈军 @date 2019年5月15日
-	 * 上午8:52:19 @param t//需要新增的实体类 @param callContex @return @throws Exception
-	 * boolean ture 有重复 false 无重复 @throws
+	 *         上午8:52:19 @param t//需要新增的实体类 @param callContex @return @throws
+	 *         Exception boolean ture 有重复 false 无重复 @throws
 	 */
 	default boolean checkRepetition(T t, CallContext callContext) throws Exception {
 		return false;

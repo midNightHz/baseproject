@@ -232,7 +232,7 @@ public interface IBaseController0<S extends BaseService<E, ID>, E extends BaseEn
 				}
 
 				// 修改权限的校验
-				if (!getService().checkModifyAuth(old, callContext)) {
+				if (!getService().checkModifyAuth(e, old, callContext)) {
 					getLogger().error("当前用户{}没有修改的权限的权限", callContext.getUserName());
 					toFailResult("你没有修改的权限");
 				}

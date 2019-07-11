@@ -1,6 +1,8 @@
 package cn.zb.base.entity;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -28,306 +30,394 @@ import cn.zb.base.repository.BasicMybatisRepository;
 import cn.zb.utils.BeanFactory;
 import cn.zb.utils.ClassUtils;
 import cn.zb.utils.ThreadFactory;
+import cn.zb.utils.Time;
 
 /**
  * 
- * @ClassName:  EntityUtil   
- * @Description:实体类的工具   
+ * @ClassName: EntityUtil
+ * @Description:实体类的工具
  * @author: 陈军
- * @date:   2019年2月14日 下午2:02:40   
- *     
- * @Copyright: 2019 www.zb-tech.com Inc. All rights reserved. 
+ * @date: 2019年2月14日 下午2:02:40
+ * 
+ * @Copyright: 2019 www.zb-tech.com Inc. All rights reserved.
  *
  */
 @Component
 public class EntityUtil {
 
-    private static Logger logger = LoggerFactory.getLogger(EntityUtil.class);
+	private static Logger logger = LoggerFactory.getLogger(EntityUtil.class);
 
-    /**
-     * 维护数据库表-实体类映射关系
-     */
-    @SuppressWarnings("rawtypes")
-    private static final Map<String, Class<? extends BaseEntity>> TABLE_CLASS_MAPPER = new ConcurrentHashMap<>();
+	// 实体类扫描完成标志
+	private static boolean scanFinish = false;
 
-    /**
-     * 维护实体类-主键映射关系
-     */
-    @SuppressWarnings("rawtypes")
-    private static final Map<Class<? extends BaseEntity>, String> ENTITY_ID_MAP = new ConcurrentHashMap<>();
+	/**
+	 * 维护数据库表-实体类映射关系
+	 */
+	@SuppressWarnings("rawtypes")
+	private static final Map<String, Class<? extends BaseEntity>> TABLE_CLASS_MAPPER = new ConcurrentHashMap<>();
 
-    private static BasicMybatisRepository respository;
+	/**
+	 * 维护实体类-主键映射关系
+	 */
+	@SuppressWarnings("rawtypes")
+	private static final Map<Class<? extends BaseEntity>, String> ENTITY_ID_MAP = new ConcurrentHashMap<>();
 
-    @Autowired
-    private static BasicMybatisRepository basicMybatisRepository() {
-        if (respository == null) {
-            respository = BeanFactory.getBean(BasicMybatisRepository.class);
-        }
-        return respository;
-    }
+	/**
+	 * 这里维护了所有实体类上字段的标签
+	 */
+	@SuppressWarnings("rawtypes")
+	private static final Map<Class<? extends BaseEntity>, Map<Class, List<Field>>> ANNOTIONS = new ConcurrentHashMap<>();
 
-    /**
-     * 这里维护者所有实体类ID的最大值
-     */
-    public static final Map<String, AtomicLong> MAX_IDS = new ConcurrentHashMap<>();
+	private static BasicMybatisRepository respository;
 
-    static {
-        // 扫描素有实体类，并维护ID 实体类 表名的映射关系
-        Runnable r = new Runnable() {
-            @SuppressWarnings({ "rawtypes" })
-            @Override
-            public void run() {
-                Reflections r = new Reflections();
-                // 获取所有实现BaseEntity的实体类
-                Set<Class<? extends BaseEntity>> cs = r.getSubTypesOf(BaseEntity.class);
+	@Autowired
+	private static BasicMybatisRepository basicMybatisRepository() {
+		if (respository == null) {
+			respository = BeanFactory.getBean(BasicMybatisRepository.class);
+		}
+		return respository;
+	}
 
-                Iterator<Class<? extends BaseEntity>> it = cs.iterator();
+	/**
+	 * 这里维护者所有实体类ID的最大值
+	 */
+	public static final Map<String, AtomicLong> MAX_IDS = new ConcurrentHashMap<>();
 
-                while (it.hasNext()) {
+	static {
+		// 扫描素有实体类，并维护ID 实体类 表名的映射关系
+		Runnable r = new Runnable() {
+			@SuppressWarnings({ "rawtypes" })
+			@Override
+			public void run() {
+				Time t = new Time();
+				Reflections r = new Reflections();
+				// 获取所有实现BaseEntity的实体类
+				Set<Class<? extends BaseEntity>> cs = r.getSubTypesOf(BaseEntity.class);
 
-                    Class<? extends BaseEntity> c = it.next();
-                    // 如果是实体类的情况
-                    if (c.getAnnotation(Entity.class) != null) {
+				Iterator<Class<? extends BaseEntity>> it = cs.iterator();
 
-                        String idName = getIdName(c);
-                        // 维护id名
-                        if (idName != null)
-                            ENTITY_ID_MAP.put(c, idName);
-                        String tableName = getTableName(c);
-                        // 维护类名
-                        if (tableName != null) {
-                            TABLE_CLASS_MAPPER.put(tableName, c);
-                        }
-                        // 维护最大的id值
-                        MAX_IDS.put(tableName, new AtomicLong(0L));
-                    }
-                }
-                // debug日志
-                // if (logger.isDebugEnabled()) {
-                logger.debug(JSONObject.toJSONString(ENTITY_ID_MAP));
-                logger.debug(JSONObject.toJSONString(TABLE_CLASS_MAPPER));
-                // }
-                logger.info("bean scan finished");
-            }
+				while (it.hasNext()) {
 
-        };
-        ThreadFactory.excute(r);
-    }
+					Class<? extends BaseEntity> c = it.next();
+					// 如果是实体类的情况
+					if (c.getAnnotation(Entity.class) != null) {
 
-    /**
-     * 
-     * @Title: getTableName   
-     * @Description: 获取实体类的表名--基于JPA实现  
-     * @author:陈军
-     * @date 2019年2月14日 下午2:03:38 
-     * @param c
-     * @return      
-     * String      
-     * @throws
-     */
-    public static String getTableName(Class<?> c) {
-        try {
+						initAnnotions(c);
 
-            Entity entityAnnotation = c.getAnnotation(Entity.class);
-            if (entityAnnotation == null) {
-                return null;
-            }
-            Table table = c.getAnnotation(Table.class);
-            // JPA默认的数据库命名规则
-            if (table == null || StringUtils.isEmpty(table.name())) {
-                String className = c.getSimpleName();
-                StringBuilder sb = new StringBuilder();
-                for (int i = 0; i < className.length() - 1; i++) {
-                    char a = className.charAt(i);
-                    char b = className.charAt(i + 1);
-                    sb.append(a);
-                    if (a >= 'a' && a <= 'z' && b > 'A' && b < 'Z') {
-                        sb.append("_");
-                    }
+						String idName = getIdName(c);
+						// 维护id名
+						if (idName != null)
+							ENTITY_ID_MAP.put(c, idName);
+						String tableName = getTableName(c);
+						// 维护类名
+						if (tableName != null) {
+							TABLE_CLASS_MAPPER.put(tableName, c);
+						}
+						// 维护最大的id值
+						MAX_IDS.put(tableName, new AtomicLong(0L));
+					}
+				}
+				t.stop();
+				scanFinish = true;
+				// debug日志
+				// if (logger.isDebugEnabled()) {
+				logger.info(JSONObject.toJSONString(ENTITY_ID_MAP));
+				logger.info(JSONObject.toJSONString(TABLE_CLASS_MAPPER));
+				logger.info(JSONObject.toJSONString(ANNOTIONS));
+				// }
+				logger.info("扫描实体类完成,耗时：{}", t.getTime());
+			}
 
-                }
-                sb.append(className.charAt(className.length() - 1));
+		};
+		ThreadFactory.excute(r);
+	}
 
-                return sb.toString().toUpperCase();
-            }
+	/**
+	 * 
+	 * @Title: initAnnotions
+	 * @Description: 扫描实体类获取实体类上 字段上的注解
+	 * @param cl
+	 * @return void
+	 * @author 陈军
+	 * @date 2019年7月11日 下午3:43:43
+	 */
+	@SuppressWarnings("rawtypes")
+	private static void initAnnotions(Class<? extends BaseEntity> cl) {
 
-            return table.name().toUpperCase();
-        } catch (Exception e) {
-            return null;
-        }
-    }
+		List<Field> fields = ClassUtils.getFields(cl);
 
-    @SuppressWarnings("rawtypes")
-    public static Class<? extends BaseEntity> getTableEntity(String tableName) {
-        return TABLE_CLASS_MAPPER.get(tableName);
-    }
+		Map<Class, List<Field>> as = ANNOTIONS.get(cl);
 
-    @SuppressWarnings("rawtypes")
-    public static String GetEntityIdFieldName(Class<? extends BaseEntity> cl) {
-        return ENTITY_ID_MAP.get(cl);
-    }
+		for (Field f : fields) {
 
-    /**
-     * 
-     * @Title: getIdName   
-     * @Description: 获取实体类的主键/联合主键 
-     * @author:陈军
-     * @date 2019年2月14日 下午2:04:28 
-     * @param c
-     * @return      
-     * String      
-     * @throws
-     */
-    private static String getIdName(Class<?> c) {
+			Annotation[] annotations = f.getAnnotations();
+			if (annotations == null || annotations.length == 0) {
+				continue;
+			}
+			if (as == null) {
+				as = new ConcurrentHashMap<>();
+				ANNOTIONS.put(cl, as);
+			}
 
-        List<Field> fs = ClassUtils.getFields(c);
-        for (int i = 0; i < fs.size(); i++) {
-            Field f = fs.get(i);
-            Id id = f.getAnnotation(Id.class);
-            if (id != null) {
-                return f.getName();
-            }
-            // 联合主键的情况下
-            EmbeddedId embeddedId = f.getAnnotation(EmbeddedId.class);
-            if (embeddedId != null) {
-                return f.getName();
-            }
+			for (int i = 0; i < annotations.length; i++) {
+				Annotation a = annotations[i];
+				Class aClass = a.annotationType();
+				List<Field> fs = as.get(aClass);
+				if (fs == null) {
+					fs = new ArrayList<>();
+					as.put(aClass, fs);
+				}
+				fs.add(f);
+			}
 
-        }
+		}
 
-        return null;
-    }
+	}
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    @Deprecated
-    /**
-     * 
-     * @Title: getMaxId   
-     * @Description: 该方法有问题，如果要获取实体类的最大Id值，使用cn.zb.base.entity.EntityUtil.setMaxId(BaseEntity<?>)方法
-     * @author:陈军
-     * @date 2019年3月20日 上午9:48:04 
-     * @param cl
-     * @return      
-     * long      
-     * @throws
-     */
-    public static long getMaxId(Class cl) {
-        return getMaxId(getTableName(cl), GetEntityIdFieldName(cl));
-    }
+	/**
+	 * 
+	 * @Title: findAnnotionFields
+	 * @Description: 获取实体类上指定标签的 字段
+	 * @param annotion
+	 * @param entityClass
+	 * @return
+	 * @return List<Field>
+	 * @author 陈军
+	 * @date 2019年7月11日 下午3:50:15
+	 */
+	@SuppressWarnings("rawtypes")
+	public static List<Field> findAnnotionFields(Class annotaionClass, Class entityClass) {
+		checkScanFinish();
+		Map<Class, List<Field>> as = ANNOTIONS.get(entityClass);
+		if (as == null)
+			return null;
+		return as.get(annotaionClass);
+	}
 
-    /**
-     * 
-     * @Title: getMaxId   
-     * @Description:获取实体类的最大id值  
-     * @author:陈军
-     * @date 2019年2月14日 下午2:04:51 
-     * @param tableName
-     * @param idName
-     * @return      
-     * long      
-     * @throws
-     */
-    private static long getMaxId(String tableName, String idName) {
+	// 检查实体类是否扫描完成，如果没有完成等待10ms
+	private static void checkScanFinish() {
 
-        // 获取服务器中的最大id值
-        Long maxId = basicMybatisRepository().getMaxId(tableName, idName);
+		while (!scanFinish) {
+			try {
+				Thread.sleep(10);
+			} catch (InterruptedException e) {
+			}
+		}
+	}
 
-        if (maxId == null) {
-            maxId = 0L;
-        }
-        // 获取服务器中维护的最大id值
-        AtomicLong maxAtomic = EntityUtil.MAX_IDS.get(tableName);
+	/**
+	 * 
+	 * @Title: getTableName @Description: 获取实体类的表名--基于JPA实现 @author:陈军 @date
+	 *         2019年2月14日 下午2:03:38 @param c @return String @throws
+	 */
+	public static String getTableName(Class<?> c) {
+		try {
 
-        if (maxAtomic == null) {
+			Entity entityAnnotation = c.getAnnotation(Entity.class);
+			if (entityAnnotation == null) {
+				return null;
+			}
+			Table table = c.getAnnotation(Table.class);
+			// JPA默认的数据库命名规则
+			if (table == null || StringUtils.isEmpty(table.name())) {
+				String className = c.getSimpleName();
+				StringBuilder sb = new StringBuilder();
+				for (int i = 0; i < className.length() - 1; i++) {
+					char a = className.charAt(i);
+					char b = className.charAt(i + 1);
+					sb.append(a);
+					if (a >= 'a' && a <= 'z' && b > 'A' && b < 'Z') {
+						sb.append("_");
+					}
 
-            maxAtomic = new AtomicLong(maxId);
+				}
+				sb.append(className.charAt(className.length() - 1));
 
-            EntityUtil.MAX_IDS.put(tableName, maxAtomic);
+				return sb.toString().toUpperCase();
+			}
 
-        }
-        // 比较服务器中维护的id与数据库中查询的id
-        if (maxId > maxAtomic.get()) {
-            maxAtomic.set(maxId);
-        }
-        // ID +1后返回
-        return maxAtomic.addAndGet(1);
-    }
+			return table.name().toUpperCase();
+		} catch (Exception e) {
+			return null;
+		}
+	}
 
-    public static void setMaxId(BaseEntity<?> object) throws Exception {
-        if (object.getId() == null) {
+	@SuppressWarnings("rawtypes")
+	public static Class<? extends BaseEntity> getTableEntity(String tableName) {
+		return TABLE_CLASS_MAPPER.get(tableName);
+	}
 
-            @SuppressWarnings("rawtypes")
-            Class<? extends BaseEntity> cl = object.getClass();
+	@SuppressWarnings("rawtypes")
+	public static String GetEntityIdFieldName(Class<? extends BaseEntity> cl) {
+		return ENTITY_ID_MAP.get(cl);
+	}
 
-            Field f = ClassUtils.getField(cl, EntityUtil.GetEntityIdFieldName(cl));
+	/**
+	 * 
+	 * @Title: getIdName @Description: 获取实体类的主键/联合主键 @author:陈军 @date 2019年2月14日
+	 *         下午2:04:28 @param c @return String @throws
+	 */
+	private static String getIdName(Class<?> c) {
 
-            if (f.getAnnotation(GeneratedValue.class) == null) {
-                Class<?> idClass = f.getType();
-                if (Number.class.isAssignableFrom(idClass)) {
-                    String dbIdName = null;
-                    Column column = f.getAnnotation(Column.class);
-                    // 获取数据库中Id的字段名
-                    if (column != null && StringUtils.isNotBlank(column.name())) {
-                        dbIdName = column.name();
-                    } else {
-                        // 没有设置字段名的时候需要按规则生成字段名
-                        StringBuilder sb = new StringBuilder();
-                        String idFieldName = f.getName();
-                        for (int i = 0; i < idFieldName.length() - 1; i++) {
-                            char a = idFieldName.charAt(i);
-                            char b = idFieldName.charAt(i + 1);
-                            sb.append(a);
-                            if (a >= 'a' && a <= 'z' && b > 'A' && b < 'Z') {
-                                sb.append("_");
-                            }
-                        }
+		List<Field> fs = ClassUtils.getFields(c);
+		for (int i = 0; i < fs.size(); i++) {
+			Field f = fs.get(i);
+			Id id = f.getAnnotation(Id.class);
+			if (id != null) {
+				return f.getName();
+			}
+			// 联合主键的情况下
+			EmbeddedId embeddedId = f.getAnnotation(EmbeddedId.class);
+			if (embeddedId != null) {
+				return f.getName();
+			}
 
-                        sb.append(idFieldName.charAt(idFieldName.length() - 1));
-                        dbIdName = sb.toString();
-                    }
-                    // 获取当前最大的id
-                    Long maxId = EntityUtil.getMaxId(getTableName(cl), dbIdName);
-                    // 字段类型是int类型时
-                    if (idClass.isAssignableFrom(Integer.class))
-                        object.setField(f, maxId.intValue());
-                    // 字段类型时long类型时
-                    else if (idClass.isAssignableFrom(Long.class))
-                        object.setField(f, maxId);
+		}
 
-                    else if (idClass.isAssignableFrom(Short.class))
-                        object.setField(f, maxId.shortValue());
+		return null;
+	}
 
-                    else
-                        throw new Exception("ID自增错误,id的字段类型错误,ID的类型只允许使用int long 和short");
-                }
-            }
-        }
-    }
-    
-    /**
-     * 
-     * @Title: getIdField   
-     * @Description: 获取id的字段 
-     * @author:陈军
-     * @date 2019年3月29日 上午11:19:04 
-     * @param cl
-     * @return      
-     * Field      
-     * @throws
-     */
-    @SuppressWarnings("unchecked")
-    public static Field getIdField(Class<?> cl) {
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	/**
+	 * 
+	 * @Title: getMaxId @Description:
+	 *         该方法有问题，如果要获取实体类的最大Id值，使用cn.zb.base.entity.EntityUtil.setMaxId(BaseEntity<?>)方法 @author:陈军 @date
+	 *         2019年3月20日 上午9:48:04 @param cl @return long @throws
+	 */
+	public static Long getMaxId(Class cl) {
 
-        if (!BaseEntity.class.isAssignableFrom(cl)) {
-            throw new RuntimeException("error class type");
-        }
+		Field f = ClassUtils.getField(cl, EntityUtil.GetEntityIdFieldName(cl));
 
-        @SuppressWarnings("rawtypes")
-        String IdFieldName = GetEntityIdFieldName((Class<? extends BaseEntity>) cl);
+		Class<?> idClass = f.getType();
+		if (Number.class.isAssignableFrom(idClass)) {
+			String dbIdName = null;
+			Column column = f.getAnnotation(Column.class);
+			// 获取数据库中Id的字段名
+			if (column != null && StringUtils.isNotBlank(column.name())) {
+				dbIdName = column.name();
+			} else {
+				// 没有设置字段名的时候需要按规则生成字段名
+				StringBuilder sb = new StringBuilder();
+				String idFieldName = f.getName();
+				for (int i = 0; i < idFieldName.length() - 1; i++) {
+					char a = idFieldName.charAt(i);
+					char b = idFieldName.charAt(i + 1);
+					sb.append(a);
+					if (a >= 'a' && a <= 'z' && b > 'A' && b < 'Z') {
+						sb.append("_");
+					}
+				}
 
-        return ClassUtils.getField(cl, IdFieldName);
+				sb.append(idFieldName.charAt(idFieldName.length() - 1));
+				dbIdName = sb.toString();
+			}
+			// 获取当前最大的id
+			Long maxId = EntityUtil.getMaxId(getTableName(cl), dbIdName);
+			return maxId;
+		}
 
-    }
-    
-    
+		return null;
+	}
+
+	/**
+	 * 
+	 * @Title: getMaxId @Description:获取实体类的最大id值 @author:陈军 @date 2019年2月14日
+	 *         下午2:04:51 @param tableName @param idName @return long @throws
+	 */
+	private static long getMaxId(String tableName, String idName) {
+
+		// 获取服务器中的最大id值
+		Long maxId = basicMybatisRepository().getMaxId(tableName, idName);
+
+		if (maxId == null) {
+			maxId = 0L;
+		}
+		// 获取服务器中维护的最大id值
+		AtomicLong maxAtomic = EntityUtil.MAX_IDS.get(tableName);
+
+		if (maxAtomic == null) {
+
+			maxAtomic = new AtomicLong(maxId);
+
+			EntityUtil.MAX_IDS.put(tableName, maxAtomic);
+
+		}
+		// 比较服务器中维护的id与数据库中查询的id
+		if (maxId > maxAtomic.get()) {
+			maxAtomic.set(maxId);
+		}
+		// ID +1后返回
+		return maxAtomic.addAndGet(1);
+	}
+
+	public static void setMaxId(BaseEntity<?> object) throws Exception {
+		if (object.getId() == null) {
+
+			@SuppressWarnings("rawtypes")
+			Class<? extends BaseEntity> cl = object.getClass();
+
+			Field f = ClassUtils.getField(cl, EntityUtil.GetEntityIdFieldName(cl));
+
+			if (f.getAnnotation(GeneratedValue.class) == null) {
+				Class<?> idClass = f.getType();
+				if (Number.class.isAssignableFrom(idClass)) {
+					String dbIdName = null;
+					Column column = f.getAnnotation(Column.class);
+					// 获取数据库中Id的字段名
+					if (column != null && StringUtils.isNotBlank(column.name())) {
+						dbIdName = column.name();
+					} else {
+						// 没有设置字段名的时候需要按规则生成字段名
+						StringBuilder sb = new StringBuilder();
+						String idFieldName = f.getName();
+						for (int i = 0; i < idFieldName.length() - 1; i++) {
+							char a = idFieldName.charAt(i);
+							char b = idFieldName.charAt(i + 1);
+							sb.append(a);
+							if (a >= 'a' && a <= 'z' && b > 'A' && b < 'Z') {
+								sb.append("_");
+							}
+						}
+
+						sb.append(idFieldName.charAt(idFieldName.length() - 1));
+						dbIdName = sb.toString();
+					}
+					// 获取当前最大的id
+					Long maxId = EntityUtil.getMaxId(getTableName(cl), dbIdName);
+					// 字段类型是int类型时
+					if (idClass.isAssignableFrom(Integer.class))
+						object.setField(f, maxId.intValue());
+					// 字段类型时long类型时
+					else if (idClass.isAssignableFrom(Long.class))
+						object.setField(f, maxId);
+
+					else if (idClass.isAssignableFrom(Short.class))
+						object.setField(f, maxId.shortValue());
+
+					else
+						throw new Exception("ID自增错误,id的字段类型错误,ID的类型只允许使用int long 和short");
+				}
+			}
+		}
+	}
+
+	/**
+	 * 
+	 * @Title: getIdField @Description: 获取id的字段 @author:陈军 @date 2019年3月29日
+	 *         上午11:19:04 @param cl @return Field @throws
+	 */
+	@SuppressWarnings("unchecked")
+	public static Field getIdField(Class<?> cl) {
+
+		if (!BaseEntity.class.isAssignableFrom(cl)) {
+			throw new RuntimeException("error class type");
+		}
+
+		@SuppressWarnings("rawtypes")
+		String IdFieldName = GetEntityIdFieldName((Class<? extends BaseEntity>) cl);
+
+		return ClassUtils.getField(cl, IdFieldName);
+
+	}
+
 }

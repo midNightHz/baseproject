@@ -44,8 +44,8 @@ public interface BaseEntity<E extends Serializable> extends Serializable, Clonea
 	/**
 	 * 
 	 * @Title: cloneEntity @Description: @author:陈军 @date 2019年4月21日
-	 * 上午9:43:35 @param cloneFields 复制的字段，为空时复制全部字段 @return @throws Exception
-	 * Object @throws
+	 *         上午9:43:35 @param cloneFields 复制的字段，为空时复制全部字段 @return @throws
+	 *         Exception Object @throws
 	 */
 	default Object cloneEntity(String... cloneFields) throws Exception {
 		Class<?> cl = this.getClass();
@@ -76,8 +76,8 @@ public interface BaseEntity<E extends Serializable> extends Serializable, Clonea
 	/**
 	 * 
 	 * @Title: cloneToOther @Description:
-	 * 将目标对象的参数复制到当前对象，保留当前对象的非空参数 @author:陈军 @date 2018年12月29日 下午1:10:37 @param
-	 * other @throws Exception void @throws
+	 *         将目标对象的参数复制到当前对象，保留当前对象的非空参数 @author:陈军 @date 2018年12月29日
+	 *         下午1:10:37 @param other @throws Exception void @throws
 	 */
 	default void cloneFromOtherNotNull(BaseEntity<?> source, String... immunitys) throws Exception {
 		if (source == null) {
@@ -130,8 +130,8 @@ public interface BaseEntity<E extends Serializable> extends Serializable, Clonea
 	/**
 	 * 
 	 * @Title: cloneOtherToThis @Description:
-	 * 从其他不同类型的对象中复制属性的类型到当前对象 @author:陈军 @date 2018年12月29日 下午1:57:16 @param
-	 * other @param unCopyFieldname void @throws
+	 *         从其他不同类型的对象中复制属性的类型到当前对象 @author:陈军 @date 2018年12月29日 下午1:57:16 @param
+	 *         other @param unCopyFieldname void @throws
 	 */
 	default void cloneOtherToThis(Object other, String... unCopyFieldname) {
 		// 原始对象
@@ -203,9 +203,9 @@ public interface BaseEntity<E extends Serializable> extends Serializable, Clonea
 	/**
 	 * 
 	 * @Title: checkDiffFromOther @Description: 比较两个对象的差异值，比较策略 当前对象为源对象 other为目标对象
-	 * 如果目标对象中的字段为空的话，则跳过比较 如果两个值的字段是一样的话则 不认为是差异值 如果两个值不一样则认为是差异值 @author:陈军 @date
-	 * 2019年1月4日 下午4:48:12 @param other 目标对象 -- @return
-	 * List<ObjectDifference> @throws
+	 *         如果目标对象中的字段为空的话，则跳过比较 如果两个值的字段是一样的话则 不认为是差异值
+	 *         如果两个值不一样则认为是差异值 @author:陈军 @date 2019年1月4日 下午4:48:12 @param other
+	 *         目标对象 -- @return List<ObjectDifference> @throws
 	 */
 	default List<ObjectDifference> checkDiffFromOther(Object other) {
 		try {
@@ -262,7 +262,7 @@ public interface BaseEntity<E extends Serializable> extends Serializable, Clonea
 	/**
 	 * 
 	 * @Title: getFieldName @Description: 获取字段名 @author:陈军 @date 2019年2月18日
-	 * 下午5:12:08 @param sf @return String @throws
+	 *         下午5:12:08 @param sf @return String @throws
 	 */
 	default String getFieldName(Field sf) {
 		FieldName fieldNameAnnotation = sf.getAnnotation(FieldName.class);
@@ -278,7 +278,7 @@ public interface BaseEntity<E extends Serializable> extends Serializable, Clonea
 	/**
 	 * 
 	 * @Title: setField @Description: 设置属性 @author:陈军 @date 2019年1月10日
-	 * 下午5:16:26 @param field @param value @throws Exception void @throws
+	 *         下午5:16:26 @param field @param value @throws Exception void @throws
 	 */
 	default void setField(Field field, Object value) throws Exception {
 		field.setAccessible(true);
@@ -288,7 +288,7 @@ public interface BaseEntity<E extends Serializable> extends Serializable, Clonea
 	/**
 	 * 
 	 * @Title: getField @Description: 获取对应字段的值 @author:陈军 @date 2019年2月18日
-	 * 下午5:11:41 @param field @return @throws Exception Object @throws
+	 *         下午5:11:41 @param field @return @throws Exception Object @throws
 	 */
 	default Object getField(Field field) throws Exception {
 		field.setAccessible(true);
@@ -298,10 +298,14 @@ public interface BaseEntity<E extends Serializable> extends Serializable, Clonea
 	/**
 	 * 
 	 * @Title: notNull @Description: 用来校验对象中那些不允许为空的字段是否为空 @author:陈军 @date
-	 * 2019年1月11日 上午9:43:02 @throws Exception void @throws
+	 *         2019年1月11日 上午9:43:02 @throws Exception void @throws
 	 */
 	default void notNull() throws Exception {
-		List<Field> fields = ClassUtils.getFields(this.getClass());
+		List<Field> fields = EntityUtil.findAnnotionFields(NotNull.class, this.getClass());
+		// List<Field> fields = ClassUtils.getFields(this.getClass());
+		if (fields == null) {
+			return;
+		}
 		for (int i = 0; i < fields.size(); i++) {
 			Field f = fields.get(i);
 			NotNull notNull = f.getAnnotation(NotNull.class);
@@ -320,11 +324,14 @@ public interface BaseEntity<E extends Serializable> extends Serializable, Clonea
 	 * @throws Exception
 	 * 
 	 * @Title: defaultValue @Description: 设置数据库中的默认值 如果字段为空 则设置默认值 @author:陈军 @date
-	 * 2019年1月24日 下午3:55:45 void @throws
+	 *         2019年1月24日 下午3:55:45 void @throws
 	 */
 	default void defaultValue() throws Exception {
-		List<Field> fields = ClassUtils.getFields(this.getClass());
-
+		List<Field> fields = EntityUtil.findAnnotionFields(DefaultValue.class, this.getClass());
+		// List<Field> fields = ClassUtils.getFields(this.getClass());
+		if (fields == null) {
+			return;
+		}
 		for (Field f : fields) {
 
 			DefaultValue dv = f.getAnnotation(DefaultValue.class);
@@ -381,7 +388,7 @@ public interface BaseEntity<E extends Serializable> extends Serializable, Clonea
 		}
 
 	}
-	
+
 	/**
 	 * 
 	 * @Title: checkStringReg
@@ -393,12 +400,11 @@ public interface BaseEntity<E extends Serializable> extends Serializable, Clonea
 	 */
 	default void checkStringReg() throws Exception {
 
-		RegCheck regCheck = this.getClass().getAnnotation(RegCheck.class);
-		if (regCheck == null) {
+		List<Field> fields = EntityUtil.findAnnotionFields(RegCheck.class, this.getClass());
+		// List<Field> fields = ClassUtils.getFields(this.getClass());
+		if (fields == null) {
 			return;
 		}
-
-		List<Field> fields = ClassUtils.getFields(this.getClass());
 
 		for (Field f : fields) {
 

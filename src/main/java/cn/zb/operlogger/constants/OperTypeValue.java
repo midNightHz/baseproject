@@ -19,6 +19,7 @@ public enum OperTypeValue {
     UPDATE(2, "修改"),
 
     SOFTDELETE(4, "废弃"),
+    AUDIT(6, "审核"),
 
     SELECT(5, "查询");
 

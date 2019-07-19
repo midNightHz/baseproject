@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -297,8 +298,12 @@ public interface BaseEntity<E extends Serializable> extends Serializable, Clonea
 
 	/**
 	 * 
-	 * @Title: notNull @Description: 用来校验对象中那些不允许为空的字段是否为空 @author:陈军 @date
-	 *         2019年1月11日 上午9:43:02 @throws Exception void @throws
+	 * @Title: notNull
+	 * @Description: 校验字段是否为空 递归调用
+	 * @throws Exception
+	 * @return void
+	 * @author 陈军
+	 * @date 2019年7月15日 下午5:22:19
 	 */
 	default void notNull() throws Exception {
 		List<Field> fields = EntityUtil.findAnnotionFields(NotNull.class, this.getClass());
@@ -309,12 +314,23 @@ public interface BaseEntity<E extends Serializable> extends Serializable, Clonea
 		for (int i = 0; i < fields.size(); i++) {
 			Field f = fields.get(i);
 			NotNull notNull = f.getAnnotation(NotNull.class);
-			if (notNull == null) {
-				continue;
-			}
 			Object obj = getField(f);
-			if (obj == null) {
-				throw new Exception(getFieldName(f) + "不允许为空");
+
+			Assert.isTrue(notNull != null && obj == null, getFieldName(f) + "不允许为空");
+
+			if (obj instanceof BaseEntity) {
+				((BaseEntity<?>) obj).notNull();
+			}
+			if (obj instanceof Iterable) {
+				Iterable<?> it = (Iterable<?>) obj;
+				Iterator<?> itor = it.iterator();
+				while (itor.hasNext()) {
+					Object next = itor.next();
+					if (next instanceof BaseEntity) {
+						((BaseEntity<?>) next).notNull();
+					}
+
+				}
 			}
 
 		}
@@ -423,9 +439,7 @@ public interface BaseEntity<E extends Serializable> extends Serializable, Clonea
 
 				String reg = fr == null ? null : fr.reg();
 				if (StringUtils.isBlank(reg)) {
-
 					continue;
-
 				}
 
 				String str = value.toString();

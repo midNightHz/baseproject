@@ -30,13 +30,30 @@
 			<artifactId>pagehelper-spring-boot-starter</artifactId>
 			<version>1.1.0</version>
 		</dependency>
-		
+
+		<dependency>
+			<groupId>io.netty</groupId>
+			<artifactId>netty-all</artifactId>
+			<version>5.0.0.Alpha2</version>
+		</dependency>
+
 		<dependency>
 			<groupId>org.javassist</groupId>
 			<artifactId>javassist</artifactId>
 		</dependency>
 
-		
+
+		<!-- 中间件服务 -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-activemq</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.activemq</groupId>
+			<artifactId>activemq-pool</artifactId>
+		</dependency>
+
+
 		<!-- 图片压缩工具 -->
 		<dependency>
 			<groupId>net.coobird</groupId>
@@ -62,7 +79,7 @@
 			<version>4.0.2</version>
 		</dependency>
 
-		
+
 		<!-- 二维码生成工具 -->
 		<dependency>
 			<groupId>com.google.zxing</groupId>
@@ -74,7 +91,7 @@
 			<artifactId>javase</artifactId>
 			<version>3.0.0</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>com.aliyun</groupId>
 			<artifactId>aliyun-java-sdk-core</artifactId>

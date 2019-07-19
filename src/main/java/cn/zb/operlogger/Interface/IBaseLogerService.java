@@ -24,18 +24,29 @@ import cn.zb.operlogger.entity.BaseOperLogger;
 public interface IBaseLogerService<T extends BaseOperLogger> extends BaseService<T, Integer> {
 
 	/**
-	 * @throws Exception
 	 * 
-	 * @Title: saveOperLogger @Description: 保存日志
-	 *         默认方法，可以将实体类的字段拷贝到日志记录中，日志中的字段需要和实体类中的字段一模一样 @author:陈军 @date
-	 *         2019年1月7日 下午1:34:13 @param entity @param operType @param
-	 *         callContext @param logDesc @param auditLog @return
-	 *         BaseOperLogger @throws
+	 * @Title: saveOperLogger
+	 * @Description: 保存日志
+	 * @param target
+	 *            修改后的表单
+	 * @param source
+	 *            库中的表单
+	 * @param operType
+	 *            操作类型
+	 * @param callContext
+	 * @param logDesc
+	 *            日志描述
+	 * @param auditLog
+	 *            日志是否需要审核
+	 * @return
+	 * @throws Exception
+	 * @return BaseOperLogger
+	 * @author 陈军
+	 * @date 2019年7月19日 上午10:16:21
 	 */
-
-	default BaseOperLogger saveOperLogger(BaseEntity<?> entity, OperTypeValue operType, CallContext callContext,
-			String logDesc, boolean auditLog) throws Exception {
-		T log = createLog(entity, operType, callContext, logDesc);
+	default BaseOperLogger saveOperLogger(BaseEntity<?> target, BaseEntity<?> source, OperTypeValue operType,
+			CallContext callContext, String logDesc, boolean auditLog) throws Exception {
+		T log = createLog(target, source, operType, callContext, logDesc);
 		if (auditLog) {
 			log.setStatus(LogAuditConstants.INIT);
 		} else {
@@ -45,12 +56,30 @@ public interface IBaseLogerService<T extends BaseOperLogger> extends BaseService
 
 	}
 
-	default T createLog(BaseEntity<?> entity, OperTypeValue operType, CallContext callContext, String logDesc)
-			throws Exception {
-		Class<T> Tclass = entityClass();
-		// @SuppressWarnings("unchecked")
-		T log = Tclass.newInstance();
+	/**
+	 * 
+	 * @Title: createLog
+	 * @Description: 初始化操作日志实体类
+	 * @param entity
+	 * @param source
+	 * @param operType
+	 * @param callContext
+	 * @param logDesc
+	 * @return
+	 * @throws Exception
+	 * @return T
+	 * @author 陈军
+	 * @date 2019年7月19日 上午10:17:17
+	 */
+	default T createLog(BaseEntity<?> entity, BaseEntity<?> source, OperTypeValue operType, CallContext callContext,
+			String logDesc) throws Exception {
+		Class<?> Tclass = entityClass();
+		@SuppressWarnings("unchecked")
+		T log = (T) (Tclass.newInstance());
 		// 将原来的数据拷贝到日志中
+		if (operType == OperTypeValue.DELETE) {
+			log.cloneOtherToThis(source);
+		}
 		log.cloneOtherToThis(entity);
 		// 基础的信息
 		log.setOpertype(operType.getOperType());
@@ -58,6 +87,7 @@ public interface IBaseLogerService<T extends BaseOperLogger> extends BaseService
 		log.setOpertime(new Date());
 		return log;
 	}
+
 
 	/**
 	 * 

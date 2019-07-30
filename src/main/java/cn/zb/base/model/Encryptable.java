@@ -1,7 +1,7 @@
 package cn.zb.base.model;
 
 /**
- * 对ID进行加密
+ * 对ID进行加密,解密
  * 
  * @author chen
  *

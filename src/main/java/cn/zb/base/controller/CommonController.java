@@ -2,11 +2,13 @@ package cn.zb.base.controller;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.lang.reflect.Field;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -17,10 +19,13 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
+import cn.zb.base.entity.BaseEntity;
 import cn.zb.base.factory.ICallContextFactory;
+import cn.zb.base.model.Encryptable;
 import cn.zb.base.result.JsonResult;
 import cn.zb.utils.Assert;
 import cn.zb.utils.BeanFactory;
+import cn.zb.utils.ClassUtils;
 import cn.zb.utils.HttpUtils;
 
 /**
@@ -139,6 +144,7 @@ public interface CommonController {
 		}
 		String json = JSONObject.toJSONString(paramsObj);
 		E e = JSON.parseObject(json, eClass);
+		decryptId(e);
 		return e;
 	}
 
@@ -148,7 +154,7 @@ public interface CommonController {
 		getLogger().trace("接收到客户端上传JSON：{}", json);
 
 		E e = JSON.parseObject(json, eClass);
-
+		decryptId(e);
 		return e;
 	}
 
@@ -185,7 +191,49 @@ public interface CommonController {
 
 		getLogger().trace("接收到客户端上传JSON：{}", json);
 
-		return JSON.parseArray(json, eClass);
+		List<E> list = JSON.parseArray(json, eClass);
+
+		decryptId(list);
+
+		return list;
+	}
+
+	default <E> E decryptId(E e) {
+
+		if (e == null) {
+			return null;
+		}
+
+		if (e instanceof Iterable) {
+
+			Iterable<?> it = (Iterable<?>) e;
+
+			Iterator<?> itor = it.iterator();
+			while (itor.hasNext()) {
+				decryptId(itor.next());
+			}
+		}
+		if (e instanceof Encryptable) {
+			Encryptable encrypt = (Encryptable) e;
+			encrypt.decryptId();
+		}
+		if (e instanceof BaseEntity) {
+			List<Field> fs = ClassUtils.getFields(e.getClass());
+
+			fs.forEach(f -> {
+				try {
+					f.setAccessible(true);
+					Object obj = f.get(e);
+
+					decryptId(obj);
+				} catch (Exception e2) {
+					e2.printStackTrace();
+				}
+
+			});
+		}
+
+		return e;
 	}
 
 }
